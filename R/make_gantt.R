@@ -3,6 +3,10 @@ detach('package:lubridate', unload = TRUE)
 library(ggplot2)
 library(ggthemes)
 
+merge_lists <- function(l1, l2) {
+    c(l1, list(l2))
+}
+
 read_task <- function(file = 'task.csv', date_format = '%d/%m/%y', delimiter = ';') {
   task_df <- read.csv(file = file, sep = delimiter, header = TRUE, stringsAsFactors = FALSE)
   task_df$start <- as.Date(task_df$start, date_format)
@@ -31,7 +35,7 @@ gantt <- function(task_file = 'task.csv', summary_file = 'summary.csv',
   ggplot(data = plot_task, aes(x = point, y = task)) + 
       geom_line(aes(color = type), size = 5) + 
       geom_segment(aes(x = start, y = value, xend = end, yend = value), data = summaries, 
-                   arrow = arrow(length = unit(0.2,'cm'), ends = 'both'), 
+                   arrow = arrow(length = unit(0.2,'cm'), ends = 'both', type = 'closed'), 
                    lineend = 'butt', size = 1) +
       theme_fivethirtyeight() +
       ggtitle(title) + 
@@ -50,9 +54,8 @@ create_summaries <- function(task_file = 'task.csv', summary_file = 'summary.csv
     for (i in seq(nrow(summary))) {
         summary_task_names <- unlist(strsplit(summary[i, 'tasks'], split = '|', fixed = TRUE))
         summary_tasks <- task[task$task %in% summary_task_names, ]
-        l <- add_to_list(l, find_summary_position(summary_tasks, summary[i, 'summary']))
+        l <- merge_lists(l, find_summary_position(summary_tasks, summary[i, 'summary']))
     } 
-    l[[1]] <- l[[1]][[1]]
     as.data.frame(data.table::rbindlist(l))
 }
 
