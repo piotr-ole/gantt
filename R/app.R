@@ -1,8 +1,3 @@
-library(shiny)
-library(DT)
-library(data.table)
-library(rhandsontable)
-
 merge_lists <- function(l1, l2) {
     c(l1, list(l2))
 }

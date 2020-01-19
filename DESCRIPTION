@@ -1,27 +1,32 @@
 Package: gantt
 Type: Package
-Title: Informative Title for Your Package
-Description: A longer statement about what this does. It must have at least one
-    complete sentence, and it may not begin with the name of the package or
-    "This package". Any URL must be enclosed in angle brackets. Any R packages
-    or other software you reference must be in single quotes. 'R CMD check'
-    may not report on these, but see  <https://cran.r-project.org/doc/manuals/r-release/R-exts.html#The-DESCRIPTION-file>.
-    Failure to obey may result in CRAN rejecting your package submission.
-Version: 0.1.0
+Title: Gantt chart drawing package
+Description: Package allows creating advanced Gantt charts.
+Version: 0.2.0
 Date: 2019-11-19
-Authors@R: c(person("your", "name", role=c("aut", "cre"), email="youremail@example.com"))
-Author: yourname [aut, cre]
-Maintainer: yourname <youremail@example.com>
-URL: https://github.com/yourgithub/gantt
-BugReports: https://github.com/yourgithub/gantt/issues
+Authors@R: c(
+    person(given = "Piotr",
+           family = "Olesiejuk",
+           role = c("aut", "cre"),
+           email = "piotrek.olesiejuk@gmail.com"))
+Maintainer: Piotr Olesiejuk <piotrek.olesiejuk@gmail.com>
+URL: https://github.com/piotr-ole/gantt
+BugReports: https://github.com/piotr-ole/gantt/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 Depends:
+    R (>= 3.0)
+Imports:
     ggplot2,
     dplyr,
-    scales
+    scales,
+    shiny,
+    data.table,
+    rhandsontable
 Suggests:
     covr,
-    testthat
+    testthat,
+    roxygen2,
+    devtools
 RoxygenNote: 6.1.1
 Roxygen: list(markdown = TRUE)

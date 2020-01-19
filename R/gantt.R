@@ -1,7 +1,3 @@
-library(ggplot2)
-library(scales)
-library(dplyr)
-
 #' @name read_task
 #' @title Read task
 #' 
@@ -9,7 +5,6 @@ library(dplyr)
 #' @param task_file \code{string} path to csv file where tasks are specified
 #' @param date_format \code{string} representing format of dates in task_file
 #' @param delimiter \code{char} symbol which separates values in task_file
-#'
 #'
 read_task <- function(task_file = 'task.csv', date_format = '%d/%m/%y', delimiter = ';') {
     task_df <- read.csv(file = task_file, sep = delimiter, header = TRUE, stringsAsFactors = FALSE)
@@ -48,7 +43,6 @@ middle_date <- function(start, end) {
     as.Date(start) + (as.Date(end) - as.Date(start)) / 2
 }
 
-
 create_summaries <- function(task) {
     tab <- task %>%
         group_by(faze) %>%
@@ -72,6 +66,7 @@ assign_colors_to_fazes <- function(task, y_axis_color_by_fazes) {
     }
     as.character(sapply(task$faze, function(x, dict) { dict[[x]] } ,dict))
 }
+
 
 adjust_path_data <- function(path_data) {
     dict <- path_data %>% group_by(faze) %>% summarise(max = max(control))
@@ -143,6 +138,8 @@ char <- function(x) {
     as.character(x)
 }
 
+#' @name create_gantt_config
+#' @title Create configuration list
 #' @export
 create_gantt_config <- function(x_axis_text_size = 10, y_axis_text_size = 10, 
                                 x_axis_label_position = 'bottom', y_axis_label_position = 'left',
@@ -153,12 +150,15 @@ create_gantt_config <- function(x_axis_text_size = 10, y_axis_text_size = 10,
     gantt_config <-  as.list(environment(), all=TRUE)
     gantt_config
 }
-
+#' @name create_gantt_task
+#' @title Create task
 #' @export
 create_gantt_task <- function(task_file = 'big_task.csv', delimiter = ';', date_format = '%d/%m/%y') {
     read_task(task_file, date_format = date_format, delimiter = delimiter)
 }
 
+#' @name gantt
+#' @title Draw Gantt chart
 #' @export
 gantt <- function(task, conf) {
     plot_task <- mutate_task(task)
