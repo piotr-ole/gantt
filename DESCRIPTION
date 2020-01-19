@@ -15,11 +15,13 @@ Maintainer: yourname <youremail@example.com>
 URL: https://github.com/yourgithub/gantt
 BugReports: https://github.com/yourgithub/gantt/issues
 License: MIT + file LICENSE
+Encoding: UTF-8
 Depends:
-    R (>= 3.0.0)
-Imports:
+    ggplot2,
+    dplyr,
+    scales
 Suggests:
     covr,
     testthat
-RoxygenNote: 6.0.0
+RoxygenNote: 6.1.1
 Roxygen: list(markdown = TRUE)

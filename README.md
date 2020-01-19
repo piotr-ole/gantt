@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/yourgithub/gantt.png?branch=master)](https://travis-ci.org/yourgithub/gantt)  [![codecov](https://codecov.io/gh/yourgithub/gantt/branch/master/graph/badge.svg)](https://codecov.io/gh/yourgithub/gantt)
 
+<img src = "man/images/logo.png" align = "right" width="120"/>
+
 ## How to finish setting up your new package
 
 Now that you've got a working package skeleton, there are a few steps to finish setting up all the integrations:
