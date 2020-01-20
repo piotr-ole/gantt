@@ -1,10 +1,8 @@
-# gantt
+# gantt <img src = "man/images/logo.png" align = "right" width="120"/>
 
 [![Build Status](https://travis-ci.org/piotr-ole/gantt.png?branch=master)](https://travis-ci.org/piotr-ole/gantt)
 [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/piotr-ole/gantt?branch=master&svg=true)](https://ci.appveyor.com/project/piotr-ole/gantt)
 [![codecov](https://codecov.io/gh/piotr-ole/gantt/branch/master/graph/badge.svg)](https://codecov.io/gh/piotr-ole/gantt)
-
-<img src = "man/images/logo.png" align = "right" width="120"/>
 
 Gantt is a R package created to fast and easy designing Gantt chart for your projects. It allows you to customize it with different options like creating paths, changing colors and sizes. Package is still in development so more powerful customization options will be added in next releases.
 
