@@ -280,7 +280,7 @@ gantt <- function(task, conf) {
               axis.title = element_blank()) +
         geom_text(aes(x = middle_date(start, end), y = value + 0.2, label = faze) , data = summaries, fontface = 'bold') +
         scale_y_discrete(limits = rev(task$task), position = conf$y_axis_label_position) + 
-        scale_x_date(date_breaks = "1 week", date_labels = "%b %d", date_minor_breaks = "1 day",
+        scale_x_date(date_breaks = "1 month", date_labels = "%b %d", date_minor_breaks = "1 day",
                      position = conf$x_axis_label_position)
     p
 }

@@ -36,8 +36,9 @@ Task file should contain following columns
 There is an example csv file task within the package
 
     library(gantt)
-    file <- system.file("extdata", "example_task_1.csv", package = "gantt")
-    task <- read_task(file)
+    file_path <- system.file("extdata", "example_task_1.csv", package = "gantt")
+    task <- read_task(file_path)
     conf <- create_gantt_config()
     gantt(task, conf)
 
+<img src = "man/images/example_gantt_1.png" align = "center"/>
