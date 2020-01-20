@@ -11,6 +11,9 @@ middle_date(start, end)
 
 \item{end}{\code{date}}
 }
+\value{
+\code{date} in between start and end dates
+}
 \description{
 Calculates middle date between start and end.
 }

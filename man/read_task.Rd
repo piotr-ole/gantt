@@ -14,6 +14,23 @@ read_task(task_file = "task.csv", date_format = "\%d/\%m/\%y",
 
 \item{delimiter}{\code{char} symbol which separates values in task_file}
 }
+\value{
+\code{data.frame} with same columns as in csv file with value column added. Value column gives
+unique value to each task.
+}
 \description{
 Creates task dataframe from csv file
+}
+\details{
+CSV file requires column described below. The order rows are given in the file,
+will be also present in data.frame.
+\itemize{
+\item{\code{start}}{  date when task starts}
+\item{\code{end}}{  date when task ends}
+\item{\code{task}}{ name of a task}
+\item{\code{type}}{ user specified type of task e.x. 'critical', 'regular'}
+\item{\code{faze}}{ tasks can be divided by fazes for example: 'Planing', 'Development', 'Tests'}
+\item{\code{control}}{  each task can be assigned with control value, tasks with same control value
+dependent on each other.}
+}
 }

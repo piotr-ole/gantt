@@ -2,10 +2,21 @@
 % Please edit documentation in R/gantt.R
 \name{gantt}
 \alias{gantt}
-\title{Draw Gantt chart}
+\title{Draws Gantt chart}
 \usage{
 gantt(task, conf)
 }
+\arguments{
+\item{task}{\code{data.frame} with tasks specified, created with \code{read_task} function}
+
+\item{conf}{\code{list} configuration list with styling parameters, created with
+\code{create_gantt_config}}
+}
 \description{
-Draw Gantt chart
+Draws Gantt chart
+}
+\references{
+\code{\link[gantt]{read_task}}
+
+\code{\link[gantt]{create_gantt_config}}
 }

@@ -11,6 +11,35 @@ create_gantt_config(x_axis_text_size = 10, y_axis_text_size = 10,
   control_path = TRUE, faze_arrows = TRUE,
   y_axis_color_by_fazes = TRUE)
 }
+\arguments{
+\item{x_axis_text_size}{\code{integer}}
+
+\item{y_axis_text_size}{\code{integer}}
+
+\item{x_axis_label_position}{\code{character} one of following: \code{top}, \code{bottom}}
+
+\item{y_axis_label_position}{\code{character} one of following: \code{left}, \code{right}}
+
+\item{task_bar_color}{decides which column from \code{type} and}
+
+\item{task_bar_width}{\code{integer}}
+
+\item{plot_title}{\code{character}}
+
+\item{plot_title_size}{\code{integer}}
+
+\item{faze_path}{\code{logical}, whether path will be drawn between tasks with same faze}
+
+\item{control_path}{\code{logical}, whether path will be drawn between tasks with same control value}
+
+\item{faze_arrows}{\code{logical}, whether arrows denoting fazes have to be drawn}
+
+\item{y_axis_color_by_fazes}{\code{integer}}
+}
 \description{
 Create configuration list
+}
+\details{
+If \code{faze_path = TRUE} and \code{control_path = TRUE} then path is drawn within fazes and within
+control groups. \ If \code{faze_path = FALSE} and \code{control_path = FALSE} then no path is drawn
 }

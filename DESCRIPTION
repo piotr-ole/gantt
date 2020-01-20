@@ -27,6 +27,8 @@ Suggests:
     covr,
     testthat,
     roxygen2,
-    devtools
+    devtools,
+    spelling
 RoxygenNote: 6.1.1
 Roxygen: list(markdown = TRUE)
+Language: en-US
