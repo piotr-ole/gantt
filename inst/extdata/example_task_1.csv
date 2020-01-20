@@ -1,0 +1,7 @@
+start;end;task;type;faze;control
+01/01/2020;14/01/2020;Create project cost;critical;Planning;1
+10/01/2020;20/01/2020;Gather resources;regular;Planning;2
+20/01/2020;20/02/2020;Design UI;regular;Development;3
+25/02/2020;10/04/2020;Create Backend;critical;Development;3
+10/03/2020;10/04/2020;Write tests;regular;Development;4
+20/04/2020;01/05/2020;Deployment;critical;Deployment;4
