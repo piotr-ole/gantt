@@ -20,10 +20,11 @@
 #'unique value to each task.
 #'@export
 read_task <- function(task_file = 'task.csv', date_format = '%d/%m/%y', delimiter = ';') {
-    task_df <- read.csv(file = task_file, sep = delimiter, header = TRUE, stringsAsFactors = FALSE)
+    task_df <- read.csv(file = task_file, sep = delimiter, header = TRUE, stringsAsFactors = TRUE)
     task_df$start <- as.Date(task_df$start, date_format)
     task_df$end <- as.Date(task_df$end, date_format)
     task_df$type <-  as.factor(task_df$type)
+    task_df$faze <-  as.factor(task_df$faze)
     task_df$value <- nrow(task_df):1
     task_df
 }
@@ -38,7 +39,7 @@ read_task <- function(task_file = 'task.csv', date_format = '%d/%m/%y', delimite
 #' are missing value of 'start', 'end' columns.
 #' @return Transformed \code{data.frame}
 #' @seealso \code{\link[gantt]{read_task}}
-mutate_task <- function(task) { # to potencjalnie mozna ladniej napisac
+mutate_task <- function(task) {
     df <- data.frame(point = character(), task = character())
     for (i in seq(nrow(task))) {
         df <- rbind(df, data.frame(point = task[i, 'start'], task = task[i, 'task'], type = task[i, 'type'],
@@ -57,7 +58,7 @@ mutate_task <- function(task) { # to potencjalnie mozna ladniej napisac
 #' @param end \code{date}
 #' @return \code{date} in between start and end dates
 middle_date <- function(start, end) {
-    as.Date(start) + (as.Date(end) - as.Date(start)) / 2
+    start + (end - start) / 2
 }
 
 #' @name create_summaries

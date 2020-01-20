@@ -9,7 +9,7 @@ Gantt is a R package created to fast and easy designing Gantt chart for your pro
 ## Installing
 
     # install.packages("devtools")
-    devtools::install_github("piotr-ole/gantt", build_vignettes=TRUE)
+    devtools::install_github("piotr-ole/gantt")
     
 ## Usage
 
@@ -40,3 +40,7 @@ There is an example csv file task within the package
     gantt(task, conf)
 
 <img src = "man/images/example_gantt_1.png" align = "center"/>
+
+You can view example file structure from R with 
+
+    View(read.csv(file_path, sep = ';))
