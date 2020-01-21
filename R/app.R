@@ -14,15 +14,15 @@ ui <- fluidPage(
         sidebarPanel(
             
             # Input: Slider for the number of bins ----
-            selectInput('selectChoice', label = 'Select action', choices = c('Add Faze', 'Add Task')),
-            uiOutput('addFazeUI'),
+            selectInput('selectChoice', label = 'Select action', choices = c('Add stage', 'Add Task')),
+            uiOutput('addstageUI'),
             uiOutput('addTaskUI')
         ),
         
         # Main panel for displaying outputs ----
         mainPanel(
-            h3('Fazes'),
-            rHandsontableOutput('fazesOutput'),
+            h3('stages'),
+            rHandsontableOutput('stagesOutput'),
             h3('Tasks'),
             rHandsontableOutput('tasksOutput')
         )
@@ -32,17 +32,17 @@ ui <- fluidPage(
 server <- function(input, output) {
     
     appReactive <- reactiveValues()
-    appReactive$fazes <- list("None")
+    appReactive$stages <- list("None")
     
     observeEvent(input$selectChoice, {
-    if (input$selectChoice == 'Add Faze'){
-        output$addFazeUI <- renderUI({
+    if (input$selectChoice == 'Add stage'){
+        output$addstageUI <- renderUI({
             tagList(
                 hr(),
-                textInput('fazeName', 'Faze name'),
-                actionButton('addFazeButton', 'Add Faze'))
+                textInput('stageName', 'stage name'),
+                actionButton('addstageButton', 'Add stage'))
             })
-    } else output$addFazeUI <- renderUI({})
+    } else output$addstageUI <- renderUI({})
         
     if (input$selectChoice == 'Add Task') {
         output$addTaskUI <- renderUI({
@@ -51,15 +51,15 @@ server <- function(input, output) {
                 dateRangeInput('taskDateRange', label = 'Task time'),
                 textInput('taskName', 'Task Name'),
                 selectInput('taskTypeSelect', 'Type of Task', choices = c('critical', 'regular')),
-                selectInput('taskFazeSelect', 'Task Faze', choices = appReactive$fazes),
+                selectInput('taskstageSelect', 'Task stage', choices = appReactive$stages),
                 actionButton('addTaskButton', 'Add Task'))
         })
     } else output$addTaskUI <- renderUI({})
     })
     
-    observeEvent(input$addFazeButton, {
-        if (input$fazeName != '') {
-            appReactive$fazes <- c(isolate(appReactive$fazes), input$fazeName)
+    observeEvent(input$addstageButton, {
+        if (input$stageName != '') {
+            appReactive$stages <- c(isolate(appReactive$stages), input$stageName)
         }
     })
     
@@ -69,17 +69,17 @@ server <- function(input, output) {
                                        end = input$taskDateRange[2],
                                        task = input$taskName,
                                        type = input$taskTypeSelect,
-                                       faze = input$taskFazeSelect))
+                                       stage = input$taskstageSelect))
     })
     
-    output$fazesOutput <- renderRHandsontable({
-        rhandsontable(matrix(appReactive$fazes), colHeaders = c('Faze name'), width = 1000)
+    output$stagesOutput <- renderRHandsontable({
+        rhandsontable(matrix(appReactive$stages), colHeaders = c('stage name'), width = 1000)
     })
     
     output$tasksOutput <- renderRHandsontable({
         df <- rbindlist(appReactive$tasks)
         df$type <- factor(df$type, levels = c('critical', 'regular'))
-        colHeaders <-  c('Start date', 'End date', 'Task', 'Task type', 'Faze')
+        colHeaders <-  c('Start date', 'End date', 'Task', 'Task type', 'stage')
         rhandsontable(df, colHeaders = colHeaders, width = 1000, height = 300)
     })
 }

@@ -29,7 +29,7 @@ will be also present in data.frame.
 \item{\code{end}}{  date when task ends}
 \item{\code{task}}{ name of a task}
 \item{\code{type}}{ user specified type of task e.x. 'critical', 'regular'}
-\item{\code{faze}}{ tasks can be divided by fazes for example: 'Planing', 'Development', 'Tests'}
+\item{\code{stage}}{ tasks can be divided by stages for example: 'Planing', 'Development', 'Tests'}
 \item{\code{control}}{  each task can be assigned with control value, tasks with same control value
 dependent on each other.}
 }

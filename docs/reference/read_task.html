@@ -8,13 +8,11 @@
 
 <title>Read task — read_task • gantt</title>
 
-
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -34,11 +32,10 @@
 
 
 
-
 <meta property="og:title" content="Read task — read_task" />
+
 <meta property="og:description" content="Creates task dataframe from csv file" />
 <meta name="twitter:card" content="summary" />
-
 
 
 
@@ -88,6 +85,7 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
+      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/piotr-ole/gantt">
@@ -114,12 +112,14 @@
     </div>
 
     <div class="ref-description">
+    
     <p>Creates task dataframe from csv file</p>
+    
     </div>
 
     <pre class="usage"><span class='fu'>read_task</span>(<span class='kw'>task_file</span> <span class='kw'>=</span> <span class='st'>"task.csv"</span>, <span class='kw'>date_format</span> <span class='kw'>=</span> <span class='st'>"%d/%m/%y"</span>,
   <span class='kw'>delimiter</span> <span class='kw'>=</span> <span class='st'>";"</span>)</pre>
-
+    
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -136,11 +136,12 @@
       <td><p><code>char</code> symbol which separates values in task_file</p></td>
     </tr>
     </table>
-
+    
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p><code>data.frame</code> with same columns as in csv file with value column added. Value column gives
 unique value to each task.</p>
+    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>CSV file requires column described below. The order rows are given in the file,
@@ -149,20 +150,23 @@ will be also present in data.frame.</p><ul>
 <li><p><code>end</code>  date when task ends</p></li>
 <li><p><code>task</code> name of a task</p></li>
 <li><p><code>type</code> user specified type of task e.x. 'critical', 'regular'</p></li>
-<li><p><code>faze</code> tasks can be devided by fazes for example: 'Planing', 'Development', 'Tests'</p></li>
+<li><p><code>stage</code> tasks can be divided by stages for example: 'Planing', 'Development', 'Tests'</p></li>
 <li><p><code>control</code>  each task can be assigned with control value, tasks with same control value
-dependend on each other.</p></li>
+dependent on each other.</p></li>
 </ul>
 
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      
       <li><a href="#value">Value</a></li>
+
       <li><a href="#details">Details</a></li>
-    </ul>
+          </ul>
 
   </div>
 </div>

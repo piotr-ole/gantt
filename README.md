@@ -26,7 +26,7 @@ Task file should contain following columns
 * `end` date when given task ends
 * `task` name of task
 * `type` string denoting task type
-* `faze` string describing faze to which task belongs
+* `stage` string describing stage to which task belongs
 * `control` integer saying which tasks are dependent of each other (same value means dependance)
 
 ## Example
@@ -43,4 +43,8 @@ There is an example csv file task within the package
 
 You can view example file structure from R with 
 
-    View(read.csv(file_path, sep = ';))
+    View(read.csv(file_path, sep = ';'))
+    
+## Cheatsheet
+
+<img src = "man/images/cheatsheet.png" align = "center"/>

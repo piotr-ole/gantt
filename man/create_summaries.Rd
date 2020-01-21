@@ -10,15 +10,15 @@ create_summaries(task)
 \item{task}{\code{data.frame}}
 }
 \value{
-\code{data.frame} with fazes summary
+\code{data.frame} with stages summary
 }
 \description{
-Creates data.frame which describes fazes.
+Creates data.frame which describes stages.
 }
 \details{
-Each row has columns: 'faze', 'start', 'end', 'value' and 'type'.
+Each row has columns: 'stage', 'start', 'end', 'value' and 'type'.
 Type is always set as 'summary', the value is calculated as maximum value of task
-in a faze plus 0.3.
+in a stage plus 0.3.
 }
 \seealso{
 \code{\link[gantt]{read_task}}

@@ -5,4 +5,4 @@
 #' @importFrom utils read.csv
 #' @importFrom data.table rbindlist
 #' @import ggplot2
-globalVariables(c('faze', 'control', 'start', 'end', 'value', 'type', 'point'))
+globalVariables(c('stage', 'control', 'start', 'end', 'value', 'type', 'point'))

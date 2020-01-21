@@ -7,9 +7,9 @@
 create_gantt_config(x_axis_text_size = 10, y_axis_text_size = 10,
   x_axis_label_position = "bottom", y_axis_label_position = "left",
   task_bar_color = "type", task_bar_width = 5,
-  plot_title = "Gantt chart", plot_title_size = 15, faze_path = TRUE,
-  control_path = TRUE, faze_arrows = TRUE,
-  y_axis_color_by_fazes = TRUE)
+  plot_title = "Gantt chart", plot_title_size = 15,
+  stage_path = TRUE, control_path = TRUE, stage_arrows = TRUE,
+  y_axis_color_by_stages = TRUE)
 }
 \arguments{
 \item{x_axis_text_size}{\code{integer}}
@@ -28,18 +28,18 @@ create_gantt_config(x_axis_text_size = 10, y_axis_text_size = 10,
 
 \item{plot_title_size}{\code{integer}}
 
-\item{faze_path}{\code{logical}, whether path will be drawn between tasks with same faze}
+\item{stage_path}{\code{logical}, whether path will be drawn between tasks with same stage}
 
 \item{control_path}{\code{logical}, whether path will be drawn between tasks with same control value}
 
-\item{faze_arrows}{\code{logical}, whether arrows denoting fazes have to be drawn}
+\item{stage_arrows}{\code{logical}, whether arrows denoting stages have to be drawn}
 
-\item{y_axis_color_by_fazes}{\code{integer}}
+\item{y_axis_color_by_stages}{\code{integer}}
 }
 \description{
 Create configuration list
 }
 \details{
-If \code{faze_path = TRUE} and \code{control_path = TRUE} then path is drawn within fazes and within
-control groups. \ If \code{faze_path = FALSE} and \code{control_path = FALSE} then no path is drawn
+If \code{stage_path = TRUE} and \code{control_path = TRUE} then path is drawn within stages and within
+control groups. \ If \code{stage_path = FALSE} and \code{control_path = FALSE} then no path is drawn
 }

@@ -8,13 +8,11 @@
 
 <title>Create configuration list — create_gantt_config • gantt</title>
 
-
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -34,11 +32,10 @@
 
 
 
-
 <meta property="og:title" content="Create configuration list — create_gantt_config" />
+
 <meta property="og:description" content="Create configuration list" />
 <meta name="twitter:card" content="summary" />
-
 
 
 
@@ -88,6 +85,7 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
+      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/piotr-ole/gantt">
@@ -114,16 +112,18 @@
     </div>
 
     <div class="ref-description">
+    
     <p>Create configuration list</p>
+    
     </div>
 
     <pre class="usage"><span class='fu'>create_gantt_config</span>(<span class='kw'>x_axis_text_size</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>y_axis_text_size</span> <span class='kw'>=</span> <span class='fl'>10</span>,
   <span class='kw'>x_axis_label_position</span> <span class='kw'>=</span> <span class='st'>"bottom"</span>, <span class='kw'>y_axis_label_position</span> <span class='kw'>=</span> <span class='st'>"left"</span>,
   <span class='kw'>task_bar_color</span> <span class='kw'>=</span> <span class='st'>"type"</span>, <span class='kw'>task_bar_width</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>plot_title</span> <span class='kw'>=</span> <span class='st'>"Gantt chart"</span>, <span class='kw'>plot_title_size</span> <span class='kw'>=</span> <span class='fl'>15</span>, <span class='kw'>faze_path</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>control_path</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>faze_arrows</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>y_axis_color_by_fazes</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
-
+  <span class='kw'>plot_title</span> <span class='kw'>=</span> <span class='st'>"Gantt chart"</span>, <span class='kw'>plot_title_size</span> <span class='kw'>=</span> <span class='fl'>15</span>,
+  <span class='kw'>stage_path</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>control_path</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>stage_arrows</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>y_axis_color_by_stages</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -160,35 +160,37 @@
       <td><p><code>integer</code></p></td>
     </tr>
     <tr>
-      <th>faze_path</th>
-      <td><p><code>logical</code>, whether path will be drawn between tasks with same faze</p></td>
+      <th>stage_path</th>
+      <td><p><code>logical</code>, whether path will be drawn between tasks with same stage</p></td>
     </tr>
     <tr>
       <th>control_path</th>
       <td><p><code>logical</code>, whether path will be drawn between tasks with same control value</p></td>
     </tr>
     <tr>
-      <th>faze_arrows</th>
-      <td><p><code>logical</code>, whether arrows denoting fazes have to be drawn</p></td>
+      <th>stage_arrows</th>
+      <td><p><code>logical</code>, whether arrows denoting stages have to be drawn</p></td>
     </tr>
     <tr>
-      <th>y_axis_color_by_fazes</th>
+      <th>y_axis_color_by_stages</th>
       <td><p><code>integer</code></p></td>
     </tr>
     </table>
-
+    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>If <code>faze_path = TRUE</code> and <code>control_path = TRUE</code> then path is drawn within fazes and within
-control groups. \ If <code>faze_path = FALSE</code> and <code>control_path = FALSE</code> then no path is drawn</p>
+    <p>If <code>stage_path = TRUE</code> and <code>control_path = TRUE</code> then path is drawn within stages and within
+control groups. \ If <code>stage_path = FALSE</code> and <code>control_path = FALSE</code> then no path is drawn</p>
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      
       <li><a href="#details">Details</a></li>
-    </ul>
+          </ul>
 
   </div>
 </div>
