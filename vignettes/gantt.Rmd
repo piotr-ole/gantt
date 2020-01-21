@@ -75,7 +75,7 @@ conf <- gantt::create_gantt_config()
 ### Draw Gantt chart
 
 Now drawing a Gantt chart is very simple, you have to execute __gantt()__ function with `task` and `conf` as arguments.
-```{r, echo = TRUE, eval=TRUE, include=TRUE, fig.width = 8, fig.height=5}
+```{r, echo = TRUE, eval=TRUE, include=TRUE, fig.width = 9, fig.height=5}
 gantt::gantt(task = task, conf = conf)
 ```
 
@@ -91,7 +91,7 @@ __Requirements__:
 * tasks are connected with paths in all stages
 * task labels are black
 
-```{r, echo = TRUE, eval=TRUE, include=TRUE, fig.width = 8, fig.height=5}
+```{r, echo = TRUE, eval=TRUE, include=TRUE, fig.width = 9, fig.height=5}
 conf <- gantt::create_gantt_config(x_axis_label_position = 'top',
                                    stage_path = TRUE, control_path = FALSE,
                                    y_axis_color_by_stages = FALSE)
@@ -106,7 +106,7 @@ __Requirements__:
 * tasks are not connected
 * there is no arrows denoting fazes in the plot
 
-```{r, echo = TRUE, eval=TRUE, include=TRUE, fig.width = 8, fig.height=5}
+```{r, echo = TRUE, eval=TRUE, include=TRUE, fig.width = 9, fig.height=5}
 conf <- gantt::create_gantt_config(x_axis_text_size = 12,
                                    stage_path = FALSE, control_path = FALSE,
                                    stage_arrows = FALSE
@@ -124,7 +124,7 @@ __Requirements__:
 
 
 
-```{r, echo = TRUE, eval=TRUE, include=TRUE, fig.width = 8, fig.height=5}
+```{r, echo = TRUE, eval=TRUE, include=TRUE, fig.width = 9, fig.height=5}
 conf <- gantt::create_gantt_config(plot_title = 'App development schedule', plot_title_size = 15,
                                    stage_path = TRUE, control_path = TRUE,
                                    task_bar_color = 'stage'

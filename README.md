@@ -1,4 +1,4 @@
-# gantt <img src = "man/images/logo.png" align = "right" width="120"/>
+# gantt <img src = "man/figures/logo.png" align = "right" width="120"/>
 
 [![Build Status](https://travis-ci.org/piotr-ole/gantt.png?branch=master)](https://travis-ci.org/piotr-ole/gantt)
 [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/piotr-ole/gantt?branch=master&svg=true)](https://ci.appveyor.com/project/piotr-ole/gantt)
@@ -39,7 +39,7 @@ There is an example csv file task within the package
     conf <- create_gantt_config()
     gantt(task, conf)
 
-<img src = "man/images/example_gantt_1.png" align = "center"/>
+<img src = "man/figures/example_gantt_1.png" align = "center"/>
 
 You can view example file structure from R with 
 
@@ -47,4 +47,4 @@ You can view example file structure from R with
     
 ## Cheatsheet
 
-<img src = "man/images/cheatsheet.png" align = "center"/>
+<img src = "man/figures/cheatsheet.png" align = "center"/>
