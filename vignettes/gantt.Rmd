@@ -1,0 +1,135 @@
+---
+title: "gantt"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{gantt}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+library(gantt)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r set-options, echo=FALSE, cache=FALSE}
+options(width = 800)
+```
+
+## Introduction
+
+Gantt is a package to create Gantt charts. This are used for scheduling purposes in project management. As different project managers has different needs, this packages offers variety of options to cutomize charts in very easy way. This document covers how to create charts and deeply walkes through styling modifications.
+
+### Instalation and loading
+
+You can easily install and load package to your R session by executing following commands.
+
+```{r, echo = TRUE, eval=FALSE}
+
+# install.packages("devtools")
+devtools::install_github("piotr-ole/gantt")
+library(gantt)
+```
+
+### Define your tasks
+
+At the begining, there is a need to gather your tasks into csv file. Each row should contain tasks in order you want to plot it on a gantt chart. The following columns should be included:
+
+* `start` date when given task starts
+* `end` date when given task ends
+* `task` string name of task
+* `type` string denoting task type
+* `stage` string describing stage to which task belongs
+* `control` integer saying which tasks are dependent of each other (same value means dependance)
+
+
+Example task file should have following structure
+
+```{r, echo = FALSE, include=TRUE}
+library(gantt)
+library(knitr)
+file_path <- system.file("extdata", "example_task_1.csv", package = "gantt")
+kable(read.csv(file_path, sep = ';'))
+```
+
+
+### Create task data.frame
+
+As you created CSV file with tasks specification, you can read it into R with __read_task()__ function. In the next examples, the 'example_task_1.csv' will be used which comes with the package.
+```{r, echo = TRUE, eval=TRUE, include=TRUE}
+file_path <- system.file("extdata", "example_task_1.csv", package = "gantt")
+task <- gantt::read_task(task_file = file_path, delimiter = ';', date_format = '%d/%m/%Y')
+```
+The `delimiter` and `date_format` has default values as in the example, in the other cases they should be specified.
+
+### Create styling list
+
+Next step is to create list with styling parameters, which will be used to draw a Gantt chart. You can do it with __create_gantt_config()__ function by passing paramters as arguments. Function comes with predefined values of all arguments so they do not have to be specified. Later we will explore how changes of parameters affect the plot.
+```{r, echo = TRUE, eval=TRUE, include=TRUE}
+conf <- gantt::create_gantt_config()
+```
+
+### Draw Gantt chart
+
+Now drawing a Gantt chart is very simple, you have to execute __gantt()__ function with `task` and `conf` as arguments.
+```{r, echo = TRUE, eval=TRUE, include=TRUE, fig.width = 8, fig.height=5}
+gantt::gantt(task = task, conf = conf)
+```
+
+## Expoloring styles
+
+Here, some cases with different styles will be shown. To view list of all styling options with detailed informations visit __create_gantt_config__ manual.
+
+### Case #1
+
+__Requirements__:
+
+* have dates shown in the top of the plot
+* tasks are connected with paths in all stages
+* task labels are black
+
+```{r, echo = TRUE, eval=TRUE, include=TRUE, fig.width = 8, fig.height=5}
+conf <- gantt::create_gantt_config(x_axis_label_position = 'top',
+                                   stage_path = TRUE, control_path = FALSE,
+                                   y_axis_color_by_stages = FALSE)
+gantt::gantt(task = task, conf = conf)
+```
+
+### Case #2
+
+__Requirements__:
+
+* have bigger dates labels
+* tasks are not connected
+* there is no arrows denoting fazes in the plot
+
+```{r, echo = TRUE, eval=TRUE, include=TRUE, fig.width = 8, fig.height=5}
+conf <- gantt::create_gantt_config(x_axis_text_size = 12,
+                                   stage_path = FALSE, control_path = FALSE,
+                                   stage_arrows = FALSE
+                                   )
+gantt::gantt(task = task, conf = conf)
+```
+
+### Case #3
+
+__Requirements__:
+
+* Chart should be titled 'App development schedule' and it should be bigger
+* tasks are connected within fazes and control groups
+* tasks bar should be colored by stages
+
+
+
+```{r, echo = TRUE, eval=TRUE, include=TRUE, fig.width = 8, fig.height=5}
+conf <- gantt::create_gantt_config(plot_title = 'App development schedule', plot_title_size = 15,
+                                   stage_path = TRUE, control_path = TRUE,
+                                   task_bar_color = 'stage'
+                                   )
+gantt::gantt(task = task, conf = conf)
+```
+
+

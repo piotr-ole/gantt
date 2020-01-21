@@ -271,7 +271,8 @@ gantt <- function(task, conf) {
     if (conf$stage_arrows == TRUE) {
     p <- p + geom_segment(aes(x = start, y = value, xend = end, yend = value), data = summaries, 
                           arrow = arrow(length = unit(0.2,'cm'), ends = 'both', type = 'closed'), 
-                          lineend = 'butt', size = 2) 
+                          lineend = 'butt', size = 2) +
+        geom_text(aes(x = middle_date(start, end), y = value + 0.2, label = stage) , data = summaries, fontface = 'bold')
     }
     p <- p +
         ggtitle(conf$plot_title) + 
@@ -279,7 +280,6 @@ gantt <- function(task, conf) {
               axis.text.y = element_text(size = conf$y_axis_text_size, color = rev(col), face ='bold'),
               axis.text.x = element_text(size = conf$x_axis_text_size),
               axis.title = element_blank()) +
-        geom_text(aes(x = middle_date(start, end), y = value + 0.2, label = stage) , data = summaries, fontface = 'bold') +
         scale_y_discrete(limits = rev(task$task), position = conf$y_axis_label_position) + 
         scale_x_date(date_breaks = "1 month", date_labels = "%b %d", date_minor_breaks = "1 day",
                      position = conf$x_axis_label_position)
