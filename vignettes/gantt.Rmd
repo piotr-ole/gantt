@@ -21,9 +21,9 @@ options(width = 800)
 
 ## Introduction
 
-Gantt is a package to create Gantt charts. This are used for scheduling purposes in project management. As different project managers has different needs, this packages offers variety of options to cutomize charts in very easy way. This document covers how to create charts and deeply walkes through styling modifications.
+Gantt is a package to create Gantt charts. This are used for scheduling purposes in project management. As different project managers has different needs, this packages offers variety of options to customize charts in very easy way. This document covers how to create charts and deeply walks through styling modifications.
 
-### Instalation and loading
+### Installation and loading
 
 You can easily install and load package to your R session by executing following commands.
 
@@ -36,7 +36,7 @@ library(gantt)
 
 ### Define your tasks
 
-At the begining, there is a need to gather your tasks into csv file. Each row should contain tasks in order you want to plot it on a gantt chart. The following columns should be included:
+At the beginning, there is a need to gather your tasks into csv file. Each row should contain tasks in order you want to plot it on a gantt chart. The following columns should be included:
 
 * `start` date when given task starts
 * `end` date when given task ends
@@ -67,7 +67,7 @@ The `delimiter` and `date_format` has default values as in the example, in the o
 
 ### Create styling list
 
-Next step is to create list with styling parameters, which will be used to draw a Gantt chart. You can do it with __create_gantt_config()__ function by passing paramters as arguments. Function comes with predefined values of all arguments so they do not have to be specified. Later we will explore how changes of parameters affect the plot.
+Next step is to create list with styling parameters, which will be used to draw a Gantt chart. You can do it with __create_gantt_config()__ function by passing parameters as arguments. Function comes with predefined values of all arguments so they do not have to be specified. Later we will explore how changes of parameters affect the plot.
 ```{r, echo = TRUE, eval=TRUE, include=TRUE}
 conf <- gantt::create_gantt_config()
 ```
@@ -79,7 +79,7 @@ Now drawing a Gantt chart is very simple, you have to execute __gantt()__ functi
 gantt::gantt(task = task, conf = conf)
 ```
 
-## Expoloring styles
+## Exploring styles
 
 Here, some cases with different styles will be shown. To view list of all styling options with detailed informations visit __create_gantt_config__ manual.
 
