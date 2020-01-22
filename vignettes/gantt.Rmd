@@ -87,14 +87,14 @@ Here, some cases with different styles will be shown. To view list of all stylin
 
 __Requirements__:
 
-* have dates shown in the top of the plot
 * tasks are connected with paths in all stages
 * task labels are black
+* tasks bar should be colored by stages
 
 ```{r, echo = TRUE, eval=TRUE, include=TRUE, fig.width = 9, fig.height=5}
-conf <- gantt::create_gantt_config(x_axis_label_position = 'top',
-                                   stage_path = TRUE, control_path = FALSE,
-                                   y_axis_color_by_stages = FALSE)
+conf <- gantt::create_gantt_config(stage_path = TRUE, control_path = FALSE,
+                                   y_axis_color_by_stages = FALSE,
+                                   task_bar_color = 'stage')
 gantt::gantt(task = task, conf = conf)
 ```
 
@@ -120,14 +120,14 @@ __Requirements__:
 
 * Chart should be titled 'App development schedule' and it should be bigger
 * tasks are connected within fazes and control groups
-* tasks bar should be colored by stages
+* have dates shown in the top of the plot
 
 
 
 ```{r, echo = TRUE, eval=TRUE, include=TRUE, fig.width = 9, fig.height=5}
 conf <- gantt::create_gantt_config(plot_title = 'App development schedule', plot_title_size = 15,
                                    stage_path = TRUE, control_path = TRUE,
-                                   task_bar_color = 'stage'
+                                   x_axis_label_position = 'top'
                                    )
 gantt::gantt(task = task, conf = conf)
 ```

@@ -214,13 +214,13 @@
 <a href="#case-1" class="anchor"></a>Case #1</h3>
 <p><strong>Requirements</strong>:</p>
 <ul>
-<li>have dates shown in the top of the plot</li>
 <li>tasks are connected with paths in all stages</li>
 <li>task labels are black</li>
+<li>tasks bar should be colored by stages</li>
 </ul>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">conf &lt;-<span class="st"> </span>gantt<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/gantt/man/create_gantt_config.html">create_gantt_config</a></span>(<span class="dt">x_axis_label_position =</span> <span class="st">'top'</span>,</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">                                   <span class="dt">stage_path =</span> <span class="ot">TRUE</span>, <span class="dt">control_path =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">                                   <span class="dt">y_axis_color_by_stages =</span> <span class="ot">FALSE</span>)</a>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">conf &lt;-<span class="st"> </span>gantt<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/gantt/man/create_gantt_config.html">create_gantt_config</a></span>(<span class="dt">stage_path =</span> <span class="ot">TRUE</span>, <span class="dt">control_path =</span> <span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">                                   <span class="dt">y_axis_color_by_stages =</span> <span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">                                   <span class="dt">task_bar_color =</span> <span class="st">'stage'</span>)</a>
 <a class="sourceLine" id="cb5-4" data-line-number="4">gantt<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/gantt/man/gantt.html">gantt</a></span>(<span class="dt">task =</span> task, <span class="dt">conf =</span> conf)</a></code></pre></div>
 <p><img src="gantt_files/figure-html/unnamed-chunk-6-1.png" width="864"></p>
 </div>
@@ -247,11 +247,11 @@
 <ul>
 <li>Chart should be titled ‘App development schedule’ and it should be bigger</li>
 <li>tasks are connected within fazes and control groups</li>
-<li>tasks bar should be colored by stages</li>
+<li>have dates shown in the top of the plot</li>
 </ul>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">conf &lt;-<span class="st"> </span>gantt<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/gantt/man/create_gantt_config.html">create_gantt_config</a></span>(<span class="dt">plot_title =</span> <span class="st">'App development schedule'</span>, <span class="dt">plot_title_size =</span> <span class="dv">15</span>,</a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">                                   <span class="dt">stage_path =</span> <span class="ot">TRUE</span>, <span class="dt">control_path =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb7-3" data-line-number="3">                                   <span class="dt">task_bar_color =</span> <span class="st">'stage'</span></a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">                                   <span class="dt">x_axis_label_position =</span> <span class="st">'top'</span></a>
 <a class="sourceLine" id="cb7-4" data-line-number="4">                                   )</a>
 <a class="sourceLine" id="cb7-5" data-line-number="5">gantt<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/gantt/man/gantt.html">gantt</a></span>(<span class="dt">task =</span> task, <span class="dt">conf =</span> conf)</a></code></pre></div>
 <p><img src="gantt_files/figure-html/unnamed-chunk-8-1.png" width="864"></p>
