@@ -121,6 +121,12 @@ assign_colors_to_stages <- function(task, color_by_stages) {
 
 #' @name adjust_path_data
 #' @title Recalculate control value
+#' @details If path needs to be drawn within both stage and control group then 
+#' it is treated as drawing path within new control groups which satisfy this need. This
+#' function recalculates the control groups to fulfill this requirement. This can be seen if 
+#' some of tasks are in the same control group but in different stages. Then, after recalculation,
+#' this tasks will have same control value within same stage but different within two different
+#' stages. In other words, new, unique control value is submitted for pair (stage, control)
 #' @param path_data \code{data.frame}
 #' 
 adjust_path_data <- function(path_data) {
@@ -135,9 +141,22 @@ adjust_path_data <- function(path_data) {
 
 #' @name critical_path
 #' @title Calculate paths for Gantt chart
+#' @details Function creates data.frame that allows to draw path with parameters (x : point , y : value)
+#' At first, task data.frame is mutated with mutate_task function to generate separate rows for start and end, 
+#' later referred as point. Then, iterating over next rows, it is checked either stage or control group 
+#' changed between this rows. If so, then new row (between them) is added with piped stage or control values respectively.
+#' For pretty paths, the straight lines need to be provided between each two connected task bars. This was accomplished with 
+#' following rules for rows with different task values.
+#' 1. If point value of two next rows is equal then nothing has to be done
+#' 2. If point value of predecessor is greater than successor, then create two middle rows with middle value and 
+#' same points as in regarded rows
+#' 3. if point value of predecessor is lower than successor, then create one middle row with value of successor and point of
+#' predecessor
 #' @param task \code{data.frame}
 #' 
 critical_path <- function(task) {
+    task[, 'start'] <- task[, 'start'] - 1
+    task[, 'end'] <- task[, 'end'] + 1
     plot_task <- mutate_task(task)
     new_df <- plot_task[0, ]
     shadow <- plot_task[1, ]
@@ -162,9 +181,9 @@ critical_path <- function(task) {
                 }
                 new_df <- rbind(new_df, r0)
             } else if (shadow['point'] > current['point']) {
-                r1 <- data.frame(point = shadow['point'], task = shadow['task'], # task dont really matters
+                r1 <- data.frame(point = shadow['point'], task = current['task'], # task dont really matters
                                  type = 'tmp', value = shadow['value'] - 0.5)
-                r2 <- data.frame(point = current['point'], task = shadow['task'],
+                r2 <- data.frame(point = current['point'], task = current['task'],
                                  type = 'tmp', value = shadow['value'] - 0.5)
                 if (shadow['stage'] == current['stage']) {
                     r1 <- cbind(r1, stage = current['stage'])
@@ -190,6 +209,7 @@ critical_path <- function(task) {
         shadow <- current
         current <- plot_task[i, ]
     }
+    new_df <- rbind(new_df, current)
     new_df
 }
 
@@ -229,6 +249,28 @@ create_gantt_config <- function(x_axis_text_size = 10, y_axis_text_size = 10,
     gantt_config
 }
 
+#' @name delete_path_config
+#' @title Delete path endings
+#' @details To create paths in a way that there is a little horizontal line at the starting and ending point of task bars, path is created
+#' as if tasks would start a day earlier and end one day later. In that manner there are unnecessary horizontal lines at path endings.
+#' This function finds the starting and ending point of each visible path and shorten this path from both sides, so the endings are
+#' not longer visible.
+#' @param path_df \code{data.frame} with path points
+#'
+delete_path_endings <- function(path_df) {
+    path_df <- path_df %>% mutate(id = rownames(path_df))
+    dict <- path_df %>%
+        group_by(control) %>% 
+        summarise(min = first(id), max = last(id)) %>%
+        as.data.frame  
+    for (control in unique(path_df$control)) {
+        path_df[path_df$control == control & path_df$id == dict[ dict$control == control, 'min'] ,'point'] = path_df[path_df$control == control & path_df$id == dict[ dict$control == control, 'min'] ,'point'] + 1
+        path_df[path_df$control == control & path_df$id == dict[ dict$control == control, 'max'] , 'point'] = path_df[path_df$control == control & path_df$id == dict[ dict$control == control, 'max'] , 'point'] - 1
+    }
+    select(path_df, -id)
+}
+
+
 #' @name gantt
 #' @title Draws Gantt chart
 #' @param task \code{data.frame} with tasks specified, created with \code{read_task} function
@@ -246,12 +288,15 @@ gantt <- function(task, conf) {
     if (conf$stage_path == TRUE && conf$control_path == FALSE)
     {
         path_data <- critical[ifelse(critical$stage %in% unique(task$stage), TRUE, FALSE), ]
-        p <- p + geom_path(aes(x = point, y = value, group = stage), color = '#252525', 
+        path_data$control <- as.numeric(as.factor(path_data$stage)) # to group everywhere by control
+        path_data <- delete_path_endings(path_data)
+        p <- p + geom_path(aes(x = point, y = value, group = control), color = '#252525', 
                            data = path_data)
     }
     if (conf$stage_path == FALSE && conf$control_path == TRUE)
     {
         path_data <- critical[ifelse(critical$control %in% unique(task$control), TRUE, FALSE), ]
+        path_data <- delete_path_endings(path_data)
         p <- p + geom_path(aes(x = point, y = value, group = control), color = '#252525', 
                            data = path_data)
     }
@@ -260,6 +305,7 @@ gantt <- function(task, conf) {
         path_data <- critical[ifelse(critical$stage %in% unique(task$stage), TRUE, FALSE), ]
         path_data <- critical[ifelse(critical$control %in% unique(task$control), TRUE, FALSE), ]
         path_data <- adjust_path_data(path_data)
+        path_data <- delete_path_endings(path_data)
         p <- p + geom_path(aes(x = point, y = value, group = control), color = '#252525', 
                            data = path_data)
     }
