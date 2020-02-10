@@ -142,21 +142,23 @@ adjust_path_data <- function(path_data) {
 #' @name critical_path
 #' @title Calculate paths for Gantt chart
 #' @details Function creates data.frame that allows to draw path with parameters (x : point , y : value)
-#' At first, task data.frame is mutated with mutate_task function to generate separate rows for start and end, 
+#' At first, task data.frame is mutated with \link{[gantt]{mutate_task}} function to generate separate rows for start and end, 
 #' later referred as point. Then, iterating over next rows, it is checked either stage or control group 
 #' changed between this rows. If so, then new row (between them) is added with piped stage or control values respectively.
 #' For pretty paths, the straight lines need to be provided between each two connected task bars. This was accomplished with 
 #' following rules for rows with different task values.
-#' 1. If point value of two next rows is equal then nothing has to be done
-#' 2. If point value of predecessor is greater than successor, then create two middle rows with middle value and 
-#' same points as in regarded rows
-#' 3. if point value of predecessor is lower than successor, then create one middle row with value of successor and point of
-#' predecessor
+#' \itemize{
+#' \item{If point value of two next rows is equal then nothing has to be done}
+#' \item{If point value of predecessor is greater than successor, then create two middle rows with middle value and 
+#' same points as in regarded rows}
+#' \item{If point value of predecessor is lower than successor, then create one middle row with value of successor and point of
+#' predecessor}
+#' }
 #' @param task \code{data.frame}
 #' 
 critical_path <- function(task) {
-    task[, 'start'] <- task[, 'start'] - 1
-    task[, 'end'] <- task[, 'end'] + 1
+    task[, 'start'] <- task[, 'start'] - 1 # to draw little horizontal lines after bar start and end
+    task[, 'end'] <- task[, 'end'] + 1  # 
     plot_task <- mutate_task(task)
     new_df <- plot_task[0, ]
     shadow <- plot_task[1, ]
@@ -232,6 +234,7 @@ char <- function(x) {
 #' @param y_axis_color_by_stages \code{integer}
 #' @param x_axis_text_size \code{integer}
 #' @param y_axis_text_size \code{integer}
+#' @param arrow_label_offset \code{numeric}
 #' @param task_bar_width \code{integer}
 #' @param plot_title \code{character}
 #' @param plot_title_size \code{integer}
@@ -244,7 +247,7 @@ create_gantt_config <- function(x_axis_text_size = 10, y_axis_text_size = 10,
                                 task_bar_color = 'type', task_bar_width = 5,
                                 plot_title = 'Gantt chart', plot_title_size = 15,
                                 stage_path = TRUE, control_path = TRUE, stage_arrows = TRUE,
-                                y_axis_color_by_stages = TRUE) {
+                                y_axis_color_by_stages = TRUE, arrow_label_offset = 0.2) {
     gantt_config <-  as.list(environment(), all=TRUE)
     gantt_config
 }
@@ -281,10 +284,14 @@ delete_path_endings <- function(path_df) {
 #' @references \code{\link[gantt]{create_gantt_config}}
 gantt <- function(task, conf) {
     critical <- critical_path(task)
-    col = assign_colors_to_stages(task, conf$y_axis_color_by_stages)
+    col <- assign_colors_to_stages(task, conf$y_axis_color_by_stages)
+    milestones <- task[task$type == 'milestone', ]
+    levels(task$task) <- c(levels(task$task), ' ')
+    task[task$type == 'milestone', 'task'] <-  ' '
     summaries <- create_summaries(task)
     plot_task <- mutate_task(task)
-    p <- ggplot(data = plot_task, aes(x = point, y = task))
+    p <- ggplot(data = plot_task, aes(x = point, y = task)) + theme_fivethirtyeight()
+    ### Creates path by given logic
     if (conf$stage_path == TRUE && conf$control_path == FALSE)
     {
         path_data <- critical[ifelse(critical$stage %in% unique(task$stage), TRUE, FALSE), ]
@@ -309,17 +316,23 @@ gantt <- function(task, conf) {
         p <- p + geom_path(aes(x = point, y = value, group = control), color = '#252525', 
                            data = path_data)
     }
+    ### Colors bars by either type or stage
     if (conf$task_bar_color == 'type') {
-        p <- p + geom_line(aes(color = type), size = conf$task_bar_width, data = plot_task) 
+        p <- p + geom_line(aes(color = type), size = conf$task_bar_width, data = plot_task)
+        colors <- create_legend(task)
+        p <- p + scale_color_manual(name = 'Type', values = colors, labels = names(colors))
     } else if (conf$task_bar_color == 'stage') {
         p <- p + geom_line(aes(color = stage), size = conf$task_bar_width, data = plot_task)
     }
+    #### Draws arrows
     if (conf$stage_arrows == TRUE) {
     p <- p + geom_segment(aes(x = start, y = value, xend = end, yend = value), data = summaries, 
                           arrow = arrow(length = unit(0.2,'cm'), ends = 'both', type = 'closed'), 
                           lineend = 'butt', size = 2) +
-        geom_text(aes(x = middle_date(start, end), y = value + 0.2, label = stage) , data = summaries, fontface = 'bold')
+        geom_text(aes(x = middle_date(start, end), y = value + conf$arrow_label_offset , label = stage) ,
+                  data = summaries, fontface = 'bold')
     }
+    #### Add theme styling based on conf list
     p <- p +
         ggtitle(conf$plot_title) + 
         theme(plot.title = element_text(hjust = 0.5, size = conf$plot_title_size, face = 'bold'), 
@@ -329,5 +342,20 @@ gantt <- function(task, conf) {
         scale_y_discrete(limits = rev(task$task), position = conf$y_axis_label_position) + 
         scale_x_date(date_breaks = "1 month", date_labels = "%b %d", date_minor_breaks = "1 day",
                      position = conf$x_axis_label_position)
+    
+    # Add points for milestones
+    p <- p + geom_point(data = milestones,
+                   aes(x = start, y = value), size = 10, shape = 18, col = 'orange') +
+            geom_label(data = milestones, mapping = aes(x = (start + 6), y = value + 0.5, label = task))
+    
     p
+}
+
+create_legend <- function(task) { # order may cause errors
+    labels <- levels(task$type)
+    milestone_index <- which(labels == 'milestone')
+    colors <- hue_pal()(length(labels))
+    colors[milestone_index] <- 'orange'
+    names(colors) <- labels
+    colors
 }
