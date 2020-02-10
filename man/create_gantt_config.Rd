@@ -9,7 +9,7 @@ create_gantt_config(x_axis_text_size = 10, y_axis_text_size = 10,
   task_bar_color = "type", task_bar_width = 5,
   plot_title = "Gantt chart", plot_title_size = 15,
   stage_path = TRUE, control_path = TRUE, stage_arrows = TRUE,
-  y_axis_color_by_stages = TRUE)
+  y_axis_color_by_stages = TRUE, arrow_label_offset = 0.2)
 }
 \arguments{
 \item{x_axis_text_size}{\code{integer}}
@@ -35,6 +35,8 @@ create_gantt_config(x_axis_text_size = 10, y_axis_text_size = 10,
 \item{stage_arrows}{\code{logical}, whether arrows denoting stages have to be drawn}
 
 \item{y_axis_color_by_stages}{\code{integer}}
+
+\item{arrow_label_offset}{\code{numeric}}
 }
 \description{
 Create configuration list

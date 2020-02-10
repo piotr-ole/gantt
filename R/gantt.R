@@ -129,7 +129,11 @@ assign_colors_to_stages <- function(task, color_by_stages) {
 #' stages. In other words, new, unique control value is submitted for pair (stage, control)
 #' @param path_data \code{data.frame}
 #' 
-adjust_path_data <- function(path_data) {
+adjust_path_data <- function(path_data, columns) {
+    if (length(columns) == 1) {
+        path_data[['control']] <- as.numeric(as.factor(path_data[[columns]]))
+        return(path_data)
+    } 
     dict <- path_data %>% group_by(stage) %>% summarise(max = max(control))
     stages <- as.data.frame(dict[, 'stage'])[, 'stage']
     maxes <- cumsum(as.numeric(as.data.frame(dict[, 'max'])[, 1]))
@@ -142,7 +146,7 @@ adjust_path_data <- function(path_data) {
 #' @name critical_path
 #' @title Calculate paths for Gantt chart
 #' @details Function creates data.frame that allows to draw path with parameters (x : point , y : value)
-#' At first, task data.frame is mutated with \link{[gantt]{mutate_task}} function to generate separate rows for start and end, 
+#' At first, task data.frame is mutated with \link[gantt]{mutate_task} function to generate separate rows for start and end, 
 #' later referred as point. Then, iterating over next rows, it is checked either stage or control group 
 #' changed between this rows. If so, then new row (between them) is added with piped stage or control values respectively.
 #' For pretty paths, the straight lines need to be provided between each two connected task bars. This was accomplished with 
@@ -283,72 +287,78 @@ delete_path_endings <- function(path_df) {
 #' @references  \code{\link[gantt]{read_task}}
 #' @references \code{\link[gantt]{create_gantt_config}}
 gantt <- function(task, conf) {
-    critical <- critical_path(task)
-    col <- assign_colors_to_stages(task, conf$y_axis_color_by_stages)
+    # preparation
     milestones <- task[task$type == 'milestone', ]
     levels(task$task) <- c(levels(task$task), ' ')
     task[task$type == 'milestone', 'task'] <-  ' '
-    summaries <- create_summaries(task)
     plot_task <- mutate_task(task)
-    p <- ggplot(data = plot_task, aes(x = point, y = task)) + theme_fivethirtyeight()
-    ### Creates path by given logic
-    if (conf$stage_path == TRUE && conf$control_path == FALSE)
-    {
-        path_data <- critical[ifelse(critical$stage %in% unique(task$stage), TRUE, FALSE), ]
-        path_data$control <- as.numeric(as.factor(path_data$stage)) # to group everywhere by control
-        path_data <- delete_path_endings(path_data)
-        p <- p + geom_path(aes(x = point, y = value, group = control), color = '#252525', 
-                           data = path_data)
+    # drawing
+    plt <- ggplot(data = plot_task, aes(x = point, y = task)) + theme_fivethirtyeight()
+    if (conf$stage_path == TRUE  | conf$control_path == TRUE) {
+        plt <- draw_path(plt, task, conf$stage_path, conf$control_path)
     }
-    if (conf$stage_path == FALSE && conf$control_path == TRUE)
-    {
-        path_data <- critical[ifelse(critical$control %in% unique(task$control), TRUE, FALSE), ]
-        path_data <- delete_path_endings(path_data)
-        p <- p + geom_path(aes(x = point, y = value, group = control), color = '#252525', 
-                           data = path_data)
-    }
-    if (conf$stage_path == TRUE && conf$control_path == TRUE)
-    {
-        path_data <- critical[ifelse(critical$stage %in% unique(task$stage), TRUE, FALSE), ]
-        path_data <- critical[ifelse(critical$control %in% unique(task$control), TRUE, FALSE), ]
-        path_data <- adjust_path_data(path_data)
-        path_data <- delete_path_endings(path_data)
-        p <- p + geom_path(aes(x = point, y = value, group = control), color = '#252525', 
-                           data = path_data)
-    }
-    ### Colors bars by either type or stage
-    if (conf$task_bar_color == 'type') {
-        p <- p + geom_line(aes(color = type), size = conf$task_bar_width, data = plot_task)
+    plt <- draw_bars(plt, plot_task, conf$task_bar_width, conf$task_bar_color) %>%
+                draw_arrows(task, conf$arrow_label_offset) %>%
+                add_themes(task, conf) %>%
+                draw_milestones(milestones)
+    plt
+}
+
+draw_bars <- function(plt, plot_task, bar_width, coloring_variable) {
+    if (coloring_variable == 'type') {
+        plt <- plt + geom_line(aes(color = type), size = bar_width, data = plot_task)
         colors <- create_legend(task)
-        p <- p + scale_color_manual(name = 'Type', values = colors, labels = names(colors))
-    } else if (conf$task_bar_color == 'stage') {
-        p <- p + geom_line(aes(color = stage), size = conf$task_bar_width, data = plot_task)
+        plt <- plt + scale_color_manual(name = 'Type', values = colors, labels = names(colors))
+    } else if (coloring_variable == 'stage') {
+        plt <- plt + geom_line(aes(color = stage), size = bar_width, data = plot_task)
     }
-    #### Draws arrows
-    if (conf$stage_arrows == TRUE) {
-    p <- p + geom_segment(aes(x = start, y = value, xend = end, yend = value), data = summaries, 
+}
+
+draw_path <- function(plt, task, is_stage_path, is_control_path ) {
+    critical <- critical_path(task)
+    where_draw <- c('stage', 'control')
+    where_draw <- where_draw[c(is_stage_path, is_control_path)]
+    for(colname in where_draw) {
+        path_data <- critical[ifelse(critical[[colname]] %in% unique(task[[colname]]), TRUE, FALSE), ]
+    }
+    path_data <- adjust_path_data(path_data, columns = where_draw)
+    path_data <- delete_path_endings(path_data)
+    plt <- plt + geom_path(aes(x = point, y = value, group = control), color = '#252525', 
+                       data = path_data)
+    plt
+}
+
+draw_milestones <- function(plt, milestones_df) {
+    plt <- plt + geom_point(data = milestones_df,
+                        aes(x = start, y = value), size = 10, shape = 18, col = 'orange') +
+        geom_label(data = milestones_df, mapping = aes(x = (start + 6), y = value + 0.5, label = task))
+    
+    plt
+}
+
+draw_arrows <- function(plt, task, label_y_offset) {
+    summaries <- create_summaries(task)
+    plt <- plt + geom_segment(aes(x = start, y = value, xend = end, yend = value), data = summaries, 
                           arrow = arrow(length = unit(0.2,'cm'), ends = 'both', type = 'closed'), 
                           lineend = 'butt', size = 2) +
-        geom_text(aes(x = middle_date(start, end), y = value + conf$arrow_label_offset , label = stage) ,
+        geom_text(aes(x = middle_date(start, end), y = value + label_y_offset , label = stage) ,
                   data = summaries, fontface = 'bold')
-    }
-    #### Add theme styling based on conf list
-    p <- p +
+    plt
+}
+
+
+add_themes <- function(plt, task, conf) {
+    col <- assign_colors_to_stages(task, conf$y_axis_color_by_stages) # can be bugged
+    plt <- plt +
         ggtitle(conf$plot_title) + 
         theme(plot.title = element_text(hjust = 0.5, size = conf$plot_title_size, face = 'bold'), 
               axis.text.y = element_text(size = conf$y_axis_text_size, color = rev(col), face ='bold'),
               axis.text.x = element_text(size = conf$x_axis_text_size),
               axis.title = element_blank()) +
-        scale_y_discrete(limits = rev(task$task), position = conf$y_axis_label_position) + 
+        scale_y_discrete(limits = rev(task$task), position = conf$y_axis_label_position) + # here need fix
         scale_x_date(date_breaks = "1 month", date_labels = "%b %d", date_minor_breaks = "1 day",
                      position = conf$x_axis_label_position)
-    
-    # Add points for milestones
-    p <- p + geom_point(data = milestones,
-                   aes(x = start, y = value), size = 10, shape = 18, col = 'orange') +
-            geom_label(data = milestones, mapping = aes(x = (start + 6), y = value + 0.5, label = task))
-    
-    p
+    plt
 }
 
 create_legend <- function(task) { # order may cause errors

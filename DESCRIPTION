@@ -22,7 +22,8 @@ Imports:
     scales,
     shiny,
     data.table,
-    rhandsontable
+    rhandsontable,
+    ggthemes
 Suggests:
     covr,
     testthat,

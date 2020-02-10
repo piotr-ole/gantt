@@ -14,16 +14,16 @@ Calculate paths for Gantt chart
 }
 \details{
 Function creates data.frame that allows to draw path with parameters (x : point , y : value)
-At first, task data.frame is mutated with mutate_task function to generate separate rows for start and end,
+At first, task data.frame is mutated with \link[gantt]{mutate_task} function to generate separate rows for start and end,
 later referred as point. Then, iterating over next rows, it is checked either stage or control group
 changed between this rows. If so, then new row (between them) is added with piped stage or control values respectively.
 For pretty paths, the straight lines need to be provided between each two connected task bars. This was accomplished with
 following rules for rows with different task values.
-\enumerate{
-\item If point value of two next rows is equal then nothing has to be done
-\item If point value of predecessor is greater than successor, then create two middle rows with middle value and
-same points as in regarded rows
-\item if point value of predecessor is lower than successor, then create one middle row with value of successor and point of
-predecessor
+\itemize{
+\item{If point value of two next rows is equal then nothing has to be done}
+\item{If point value of predecessor is greater than successor, then create two middle rows with middle value and
+same points as in regarded rows}
+\item{If point value of predecessor is lower than successor, then create one middle row with value of successor and point of
+predecessor}
 }
 }

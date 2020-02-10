@@ -4,5 +4,6 @@
 #' @importFrom scales hue_pal
 #' @importFrom utils read.csv
 #' @importFrom data.table rbindlist
+#' @importFrom ggthemes theme_fivethirtyeight
 #' @import ggplot2
 globalVariables(c('stage', 'control', 'start', 'end', 'value', 'type', 'point', 'id'))

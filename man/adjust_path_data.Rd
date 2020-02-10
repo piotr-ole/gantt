@@ -4,7 +4,7 @@
 \alias{adjust_path_data}
 \title{Recalculate control value}
 \usage{
-adjust_path_data(path_data)
+adjust_path_data(path_data, columns)
 }
 \arguments{
 \item{path_data}{\code{data.frame}}
