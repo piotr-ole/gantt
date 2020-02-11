@@ -126,8 +126,10 @@ assign_colors_to_stages <- function(task, color_by_stages) {
 #' function recalculates the control groups to fulfill this requirement. This can be seen if 
 #' some of tasks are in the same control group but in different stages. Then, after recalculation,
 #' this tasks will have same control value within same stage but different within two different
-#' stages. In other words, new, unique control value is submitted for pair (stage, control)
+#' stages. In other words, new, unique control value is submitted for pair (stage, control).
+#' If path have to be drawn within one of stage of control, then the control is recalculated to fulfill this need.
 #' @param path_data \code{data.frame}
+#' @param columns \code{list} 
 #' 
 adjust_path_data <- function(path_data, columns) {
     if (length(columns) == 1) {
@@ -288,7 +290,7 @@ delete_path_endings <- function(path_df) {
 #' @references \code{\link[gantt]{create_gantt_config}}
 gantt <- function(task, conf) {
     # preparation
-    milestones <- task[task$type == 'milestone', ]
+    milestones_df <- task[task$type == 'milestone', ]
     levels(task$task) <- c(levels(task$task), ' ')
     task[task$type == 'milestone', 'task'] <-  ' '
     plot_task <- mutate_task(task)
@@ -300,10 +302,18 @@ gantt <- function(task, conf) {
     plt <- draw_bars(plt, plot_task, conf$task_bar_width, conf$task_bar_color) %>%
                 draw_arrows(task, conf$arrow_label_offset) %>%
                 add_themes(task, conf) %>%
-                draw_milestones(milestones)
+                draw_milestones(milestones_df)
     plt
 }
 
+#' @name draw_bars
+#' @title Draw bars
+#' @description  Draws bars for each task 
+#' @param plt \code{ggplot object}
+#' @param plot_task \code{data.frame}
+#' @param bar_width \code{numeric}
+#' @param coloring_variable \code{string} either 'type' or 'stage'
+#' 
 draw_bars <- function(plt, plot_task, bar_width, coloring_variable) {
     if (coloring_variable == 'type') {
         plt <- plt + geom_line(aes(color = type), size = bar_width, data = plot_task)
@@ -314,6 +324,23 @@ draw_bars <- function(plt, plot_task, bar_width, coloring_variable) {
     }
 }
 
+#' @name draw_path
+#' @title Draw path
+#' @details Draws path between bars on the plot. If only \code{is_stage_path} equals \code{TRUE} then 
+#' path is drawn between every bar within stages. If only \code{is_control_path} equals \code{TRUE} then
+#' path is drawn between every bar within control groups. With both values equal \code{TRUE} then
+#' path is drawn between every bar within stages and control groups. 
+#' Function draws a line by connecting points from \link[gantt]{critical_path} for valid stages and control groups.
+#' Function groups path over control groups, previously modified with \link[gantt]{adjust_path_data}
+#' which transforms control values in a way satisfying the given logic in \code{is_stage_path} and \code{is_control_path}.
+#' 
+#' @param plt \code{ggplot object}
+#' @param task \code{task}
+#' @param is_stage_path \code{logical} if path will be drawn within stages
+#' @param is_control_path \code{logical}  if path will be drawn within control groups
+#' 
+#' @return \code{ggplot object}
+#' 
 draw_path <- function(plt, task, is_stage_path, is_control_path ) {
     critical <- critical_path(task)
     where_draw <- c('stage', 'control')
@@ -328,6 +355,15 @@ draw_path <- function(plt, task, is_stage_path, is_control_path ) {
     plt
 }
 
+#' @name draw_milestones
+#' @title Draw milestone points
+#' @description Adds geom_point layer with points to corresponding milestones
+#' 
+#' @param plt \code{ggplot object}
+#' @param milestones_df \code{data.frame}, it is data.frame containing every task of milestone type
+#' 
+#' @return \code{ggplot object}
+#'
 draw_milestones <- function(plt, milestones_df) {
     plt <- plt + geom_point(data = milestones_df,
                         aes(x = start, y = value), size = 10, shape = 18, col = 'orange') +
@@ -336,6 +372,16 @@ draw_milestones <- function(plt, milestones_df) {
     plt
 }
 
+#' @name draw_arrows
+#' @title Add arrows for stages
+#' @details Adds plot layer with arrows describing each stage. Horizontal arrows are drawn under the earliest
+#' task bar in each stage. Each starts in starting point of earliest task in the stage and ends in the ending
+#' point of latest task in the the stage.
+#' @param plt \code{ggplot object}
+#' @param task \code{data.frame}
+#' @param label_y_offset \code{numeric} offset between arrow and its label
+#' 
+#' @return \code{ggplot object}
 draw_arrows <- function(plt, task, label_y_offset) {
     summaries <- create_summaries(task)
     plt <- plt + geom_segment(aes(x = start, y = value, xend = end, yend = value), data = summaries, 
@@ -346,7 +392,12 @@ draw_arrows <- function(plt, task, label_y_offset) {
     plt
 }
 
-
+#' @name add_themes
+#' @title Add theme to the plot
+#' @description Adds styling to the plot with user defined configuration
+#' @param plt \code{ggplot object}
+#' @param task \code{data.frame}
+#' @param conf \code{list} with styling configuration
 add_themes <- function(plt, task, conf) {
     col <- assign_colors_to_stages(task, conf$y_axis_color_by_stages) # can be bugged
     plt <- plt +
@@ -361,11 +412,20 @@ add_themes <- function(plt, task, conf) {
     plt
 }
 
+#' @name create_legend
+#' @title Create legend
+#' @details Creates color list that can be used to manually scale colors in the plot. It is necessary because
+#' bars and milestones are created as different geoms, but has to be considered in one legend.
+#' 
+#' @param task \code{data.frame}
+#' 
+#' @return \code{list} with colors, named by types of tasks
+#' @seealso \link[gantt]{draw_bars}
 create_legend <- function(task) { # order may cause errors
     labels <- levels(task$type)
     milestone_index <- which(labels == 'milestone')
     colors <- hue_pal()(length(labels))
-    colors[milestone_index] <- 'orange'
+    colors[milestone_index] <- 'orange' # can crash if milestone do not exist
     names(colors) <- labels
     colors
 }

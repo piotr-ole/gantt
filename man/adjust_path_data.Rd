@@ -8,6 +8,8 @@ adjust_path_data(path_data, columns)
 }
 \arguments{
 \item{path_data}{\code{data.frame}}
+
+\item{columns}{\code{list}}
 }
 \description{
 Recalculate control value
@@ -18,5 +20,6 @@ it is treated as drawing path within new control groups which satisfy this need.
 function recalculates the control groups to fulfill this requirement. This can be seen if
 some of tasks are in the same control group but in different stages. Then, after recalculation,
 this tasks will have same control value within same stage but different within two different
-stages. In other words, new, unique control value is submitted for pair (stage, control)
+stages. In other words, new, unique control value is submitted for pair (stage, control).
+If path have to be drawn within one of stage of control, then the control is recalculated to fulfill this need.
 }
