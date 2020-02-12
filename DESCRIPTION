@@ -23,7 +23,8 @@ Imports:
     shiny,
     data.table,
     rhandsontable,
-    ggthemes
+    ggthemes,
+    tibble
 Suggests:
     covr,
     testthat,

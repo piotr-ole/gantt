@@ -5,5 +5,6 @@
 #' @importFrom utils read.csv
 #' @importFrom data.table rbindlist
 #' @importFrom ggthemes theme_fivethirtyeight
+#' @importFrom tibble deframe
 #' @import ggplot2
-globalVariables(c('stage', 'control', 'start', 'end', 'value', 'type', 'point', 'id', 'task'))
+globalVariables(c('stage', 'control', 'start', 'end', 'value', 'type', 'point', 'id', 'task', 'people'))

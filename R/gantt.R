@@ -244,6 +244,10 @@ char <- function(x) {
 #' @param task_bar_width \code{integer}
 #' @param plot_title \code{character}
 #' @param plot_title_size \code{integer}
+#' @param bar_labels \code{string} can be 'people', 'task' or 'None', decides which parameter should label task bars
+#' @param date_breaks \code{string} How dense the labels on the x-axis are (\link[ggplot2]{scale_x_date})
+#' @param date_minor_breaks \code{string} How dense are vertical lines dividing x-axis (\link[ggplot2]{scale_x_date})
+#' @param y_axis_label \code{string} can be 'people', 'task' or 'None', decides which parameter should label y-axis
 #' @details 
 #' If \code{stage_path = TRUE} and \code{control_path = TRUE} then path is drawn within stages and within
 #' control groups. \\ If \code{stage_path = FALSE} and \code{control_path = FALSE} then no path is drawn
@@ -253,7 +257,9 @@ create_gantt_config <- function(x_axis_text_size = 10, y_axis_text_size = 10,
                                 task_bar_color = 'type', task_bar_width = 5,
                                 plot_title = 'Gantt chart', plot_title_size = 15,
                                 stage_path = TRUE, control_path = TRUE, stage_arrows = TRUE,
-                                y_axis_color_by_stages = TRUE, arrow_label_offset = 0.2) {
+                                y_axis_color_by_stages = TRUE, arrow_label_offset = 0.2,
+                                date_breaks = '1 week', date_minor_breaks = "1 day", 
+                                y_axis_label = 'task', bar_labels = 'people') {
     gantt_config <-  as.list(environment(), all=TRUE)
     gantt_config
 }
@@ -302,7 +308,9 @@ gantt <- function(task, conf) {
     plt <- draw_bars(plt, plot_task, conf$task_bar_width, conf$task_bar_color) %>%
                 draw_arrows(task, conf$arrow_label_offset) %>%
                 add_themes(task, conf) %>%
-                draw_milestones(milestones_df)
+                draw_milestones(milestones_df) %>%
+                add_labels(task, conf$bar_labels)
+    
     plt
 }
 
@@ -366,8 +374,8 @@ draw_path <- function(plt, task, is_stage_path, is_control_path ) {
 #'
 draw_milestones <- function(plt, milestones_df) {
     plt <- plt + geom_point(data = milestones_df,
-                        aes(x = start, y = value), size = 10, shape = 18, col = 'orange') +
-        geom_label(data = milestones_df, mapping = aes(x = (start + 6), y = value + 0.5, label = task))
+                        aes(x = start, y = value), size = 10, shape = 18, col = 'orange')
+     #   geom_label(data = milestones_df, mapping = aes(x = (start + 6), y = value + 0.5, label = task))
     
     plt
 }
@@ -399,16 +407,43 @@ draw_arrows <- function(plt, task, label_y_offset) {
 #' @param task \code{data.frame}
 #' @param conf \code{list} with styling configuration
 add_themes <- function(plt, task, conf) {
+    colors <- deframe(ggthemes::ggthemes_data[["fivethirtyeight"]])
     col <- assign_colors_to_stages(task, conf$y_axis_color_by_stages) # can be bugged
     plt <- plt +
         ggtitle(conf$plot_title) + 
         theme(plot.title = element_text(hjust = 0.5, size = conf$plot_title_size, face = 'bold'), 
               axis.text.y = element_text(size = conf$y_axis_text_size, color = rev(col), face ='bold'),
               axis.text.x = element_text(size = conf$x_axis_text_size),
-              axis.title = element_blank()) +
-        scale_y_discrete(limits = rev(task$task), position = conf$y_axis_label_position) + # here need fix
-        scale_x_date(date_breaks = "1 month", date_labels = "%b %d", date_minor_breaks = "1 day",
-                     position = conf$x_axis_label_position)
+              axis.title = element_blank(), panel.grid.minor.x = element_line(color = colors['Light Gray']),
+              panel.background = element_rect(fill = 'white'), plot.background = element_blank())
+    if (conf$y_axis_label != 'None') {
+        plt <- plt + scale_y_discrete(limits = rev(task$task), position = conf$y_axis_label_position, 
+                         labels = rev(task[[conf$y_axis_label]]))
+        } 
+    plt <- plt + scale_x_date(date_breaks = conf$date_breaks, date_labels = "%b %d",
+                              date_minor_breaks = conf$date_minor_breaks,
+                              position = conf$x_axis_label_position,
+                              limits = c(task$start[1], task$end[nrow(task)] + nchar(as.character(task$end[nrow(task)]))))
+    plt
+}
+
+#' @name add_labels
+#' @title Add task bar labels
+#' @description Adds geom_label layer with names given in \code{label} parameter. Labels are drawn next
+#' to the task bars.
+#' 
+#' @param plt \code{ggplot object}
+#' @param task \code{data.frame}
+#' @param label \code{string} decides which variable from task will be drawn as a label. Possible values are: 'people',
+#' 'task' and 'None'. If 'None', then labels are not added to the plot.
+#' 
+#' @return \code{ggplot object}
+add_labels <- function(plt, task, label) {
+    if (label == 'None') return(plt)
+    task <- task[ !(task[[label]] %in% c(' ', '')), ]
+    plt <- plt +
+        geom_label(data = task, mapping = aes(x = end + 2, y = value, label = eval(sym(eval(label)))),
+                   hjust = 'left')
     plt
 }
 

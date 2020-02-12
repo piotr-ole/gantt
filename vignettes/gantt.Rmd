@@ -51,7 +51,7 @@ Example task file should have following structure
 ```{r, echo = FALSE, include=TRUE}
 library(gantt)
 library(knitr)
-file_path <- system.file("extdata", "example_task_1.csv", package = "gantt")
+file_path <- system.file("extdata", "example_task_3.csv", package = "gantt")
 kable(read.csv(file_path, sep = ';'))
 ```
 
@@ -60,7 +60,7 @@ kable(read.csv(file_path, sep = ';'))
 
 As you created CSV file with tasks specification, you can read it into R with __read_task()__ function. In the next examples, the 'example_task_1.csv' will be used which comes with the package.
 ```{r, echo = TRUE, eval=TRUE, include=TRUE}
-file_path <- system.file("extdata", "example_task_1.csv", package = "gantt")
+file_path <- system.file("extdata", "example_task_3.csv", package = "gantt")
 task <- gantt::read_task(task_file = file_path, delimiter = ';', date_format = '%d/%m/%Y')
 ```
 The `delimiter` and `date_format` has default values as in the example, in the other cases they should be specified.

@@ -9,7 +9,9 @@ create_gantt_config(x_axis_text_size = 10, y_axis_text_size = 10,
   task_bar_color = "type", task_bar_width = 5,
   plot_title = "Gantt chart", plot_title_size = 15,
   stage_path = TRUE, control_path = TRUE, stage_arrows = TRUE,
-  y_axis_color_by_stages = TRUE, arrow_label_offset = 0.2)
+  y_axis_color_by_stages = TRUE, arrow_label_offset = 0.2,
+  date_breaks = "1 week", date_minor_breaks = "1 day",
+  y_axis_label = "task", bar_labels = "people")
 }
 \arguments{
 \item{x_axis_text_size}{\code{integer}}
@@ -37,6 +39,14 @@ create_gantt_config(x_axis_text_size = 10, y_axis_text_size = 10,
 \item{y_axis_color_by_stages}{\code{integer}}
 
 \item{arrow_label_offset}{\code{numeric}}
+
+\item{date_breaks}{\code{string} How dense the labels on the x-axis are (\link[ggplot2]{scale_x_date})}
+
+\item{date_minor_breaks}{\code{string} How dense are vertical lines dividing x-axis (\link[ggplot2]{scale_x_date})}
+
+\item{y_axis_label}{\code{string} can be 'people', 'task' or 'None', decides which parameter should label y-axis}
+
+\item{bar_labels}{\code{string} can be 'people', 'task' or 'None', decides which parameter should label task bars}
 }
 \description{
 Create configuration list
