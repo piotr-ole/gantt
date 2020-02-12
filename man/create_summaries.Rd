@@ -4,10 +4,14 @@
 \alias{create_summaries}
 \title{Create summary data frame}
 \usage{
-create_summaries(task)
+create_summaries(task, cascade_summaries = FALSE)
 }
 \arguments{
 \item{task}{\code{data.frame}}
+
+\item{cascade_summaries}{\code{logical} should stage just starts after previous ends (\code{TRUE}) or starts with first task
+in the next stage (\code{FALSE}). Note, if there are stages that overlap then stage always starts with first task
+(the \code{FALSE} equivalent).}
 }
 \value{
 \code{data.frame} with stages summary

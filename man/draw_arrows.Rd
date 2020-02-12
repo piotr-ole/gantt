@@ -4,7 +4,7 @@
 \alias{draw_arrows}
 \title{Add arrows for stages}
 \usage{
-draw_arrows(plt, task, label_y_offset)
+draw_arrows(plt, task, label_y_offset, position, cascade_staging)
 }
 \arguments{
 \item{plt}{\code{ggplot object}}
@@ -12,6 +12,14 @@ draw_arrows(plt, task, label_y_offset)
 \item{task}{\code{data.frame}}
 
 \item{label_y_offset}{\code{numeric} offset between arrow and its label}
+
+\item{position}{\code{string} either 'top' or 'inplace', if 'top', arrows are drawn at the top of the plot.
+If 'inplace' then arrows are drawn just under first task in each stage.}
+
+\item{cascade_staging}{\code{logical} whether next stage starts at the end of the previous stage (\code{TRUE}) or
+starts when first task in given stage starts (\code{FALSE}). If two stages overlaps then the second behavior occurs.
+Note that, the \code{TRUE} value leads to continuous staging area, and in \code{FALSE} option,
+gaps can be present between stages.}
 }
 \value{
 \code{ggplot object}

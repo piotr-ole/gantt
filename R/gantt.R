@@ -66,16 +66,25 @@ middle_date <- function(start, end) {
 #' 
 #' @description Creates data.frame which describes stages.
 #' @param task \code{data.frame} 
+#' @param cascade_summaries \code{logical} should stage just starts after previous ends (\code{TRUE}) or starts with first task
+#' in the next stage (\code{FALSE}). Note, if there are stages that overlap then stage always starts with first task 
+#' (the \code{FALSE} equivalent).
 #' @details  Each row has columns: 'stage', 'start', 'end', 'value' and 'type'. 
 #' Type is always set as 'summary', the value is calculated as maximum value of task 
 #' in a stage plus 0.3.
 #' @return \code{data.frame} with stages summary
 #' @seealso \code{\link[gantt]{read_task}}
-create_summaries <- function(task) {
+create_summaries <- function(task, cascade_summaries = FALSE) {
     tab <- task %>%
         group_by(stage) %>%
-        summarise(start = min(start), end = max(end), value = max(value) + 0.3, type = 'summary')
-    as.data.frame(tab[order(tab$value, decreasing = TRUE), ])
+        summarise(start = min(start), end = max(end), value = max(value) + 0.35, type = 'summary')
+    tab <- as.data.frame(tab[order(tab$value, decreasing = TRUE), ])
+    if (cascade_summaries == TRUE) {
+        for (i in 2:nrow(tab)) { 
+            if (tab[i, 'start'] > tab[i-1, 'end']) tab[i , 'start'] <- tab[i-1, 'end']
+        }
+    }
+    tab
 }
 
 #' @name create_stage_task_list
@@ -97,10 +106,8 @@ create_stage_task_list <- function(task) {
 #' @seealso \code{\link[gantt]{read_task}}
 create_color_dict <- function(task) {
     n <- length(unique(task$stage))
-    split(hue_pal()(n), unique(task$stage))
+    split(hue_pal()(n), rev(unique(task$stage)))
 }
-
-# zmienic nazwe funkcji na assign colors_to_tasks
 
 #' @name assign_colors_to_stages
 #' @title Assign color to tasks
@@ -189,7 +196,7 @@ critical_path <- function(task) {
                 }
                 new_df <- rbind(new_df, r0)
             } else if (shadow['point'] > current['point']) {
-                r1 <- data.frame(point = shadow['point'], task = current['task'], # task dont really matters
+                r1 <- data.frame(point = shadow['point'], task = current['task'],
                                  type = 'tmp', value = shadow['value'] - 0.5)
                 r2 <- data.frame(point = current['point'], task = current['task'],
                                  type = 'tmp', value = shadow['value'] - 0.5)
@@ -248,18 +255,25 @@ char <- function(x) {
 #' @param date_breaks \code{string} How dense the labels on the x-axis are (\link[ggplot2]{scale_x_date})
 #' @param date_minor_breaks \code{string} How dense are vertical lines dividing x-axis (\link[ggplot2]{scale_x_date})
 #' @param y_axis_label \code{string} can be 'people', 'task' or 'None', decides which parameter should label y-axis
+#' @param add_staging_areas \code{logical} if the each stage should have colored background
+#' @param arrows_position \code{string} where staging arrows should be placed, possible 'top' or 'inplace'
+#' @param cascade_staging \code{logical} if TRUE, then arrows arrows and staging backgrounds would depicts
+#' stages which starts at the end of previous stage and ends at the end of last task of the stage.
+#' @param bar_labels_position \code{string} sets position of labels draw for each bar. Can be 'right' or 'bottom'
 #' @details 
 #' If \code{stage_path = TRUE} and \code{control_path = TRUE} then path is drawn within stages and within
 #' control groups. \\ If \code{stage_path = FALSE} and \code{control_path = FALSE} then no path is drawn
 #' @export
-create_gantt_config <- function(x_axis_text_size = 10, y_axis_text_size = 10, 
+create_gantt_config <- function(x_axis_text_size = 10, y_axis_text_size = 12, 
                                 x_axis_label_position = 'bottom', y_axis_label_position = 'left',
                                 task_bar_color = 'type', task_bar_width = 5,
                                 plot_title = 'Gantt chart', plot_title_size = 15,
                                 stage_path = TRUE, control_path = TRUE, stage_arrows = TRUE,
-                                y_axis_color_by_stages = TRUE, arrow_label_offset = 0.2,
+                                y_axis_color_by_stages = TRUE, arrow_label_offset = 0.3,
                                 date_breaks = '1 week', date_minor_breaks = "1 day", 
-                                y_axis_label = 'task', bar_labels = 'people') {
+                                y_axis_label = 'task', bar_labels = 'people',
+                                add_staging_areas = FALSE, cascade_staging = FALSE,
+                                arrows_position = 'inplace', bar_labels_position = 'left') {
     gantt_config <-  as.list(environment(), all=TRUE)
     gantt_config
 }
@@ -305,11 +319,12 @@ gantt <- function(task, conf) {
     if (conf$stage_path == TRUE  | conf$control_path == TRUE) {
         plt <- draw_path(plt, task, conf$stage_path, conf$control_path)
     }
-    plt <- draw_bars(plt, plot_task, conf$task_bar_width, conf$task_bar_color) %>%
-                draw_arrows(task, conf$arrow_label_offset) %>%
+    plt <- add_staging_areas(plt, task, conf$cascade_staging) %>%
+        draw_bars(plot_task, conf$task_bar_width, conf$task_bar_color) %>%
+                draw_arrows(task, conf$arrow_label_offset, conf$arrows_position, conf$cascade_staging) %>%
                 add_themes(task, conf) %>%
                 draw_milestones(milestones_df) %>%
-                add_labels(task, conf$bar_labels)
+                add_labels(task, conf$bar_labels, conf$bar_labels_position)
     
     plt
 }
@@ -374,7 +389,7 @@ draw_path <- function(plt, task, is_stage_path, is_control_path ) {
 #'
 draw_milestones <- function(plt, milestones_df) {
     plt <- plt + geom_point(data = milestones_df,
-                        aes(x = start, y = value), size = 10, shape = 18, col = 'orange')
+                        aes(x = start, y = value), size = 8, shape = 18, col = 'orange')
      #   geom_label(data = milestones_df, mapping = aes(x = (start + 6), y = value + 0.5, label = task))
     
     plt
@@ -388,13 +403,22 @@ draw_milestones <- function(plt, milestones_df) {
 #' @param plt \code{ggplot object}
 #' @param task \code{data.frame}
 #' @param label_y_offset \code{numeric} offset between arrow and its label
+#' @param position \code{string} either 'top' or 'inplace', if 'top', arrows are drawn at the top of the plot.
+#' If 'inplace' then arrows are drawn just under first task in each stage. 
+#' @param cascade_staging \code{logical} whether next stage starts at the end of the previous stage (\code{TRUE}) or
+#' starts when first task in given stage starts (\code{FALSE}). If two stages overlaps then the second behavior occurs.
+#' Note that, the \code{TRUE} value leads to continuous staging area, and in \code{FALSE} option, 
+#' gaps can be present between stages.
 #' 
 #' @return \code{ggplot object}
-draw_arrows <- function(plt, task, label_y_offset) {
-    summaries <- create_summaries(task)
+draw_arrows <- function(plt, task, label_y_offset, position, cascade_staging) {
+    summaries <- create_summaries(task, cascade_staging)
+    if (position == 'top') {
+        summaries[, 'value'] <- max(summaries$value)
+    }
     plt <- plt + geom_segment(aes(x = start, y = value, xend = end, yend = value), data = summaries, 
-                          arrow = arrow(length = unit(0.2,'cm'), ends = 'both', type = 'closed'), 
-                          lineend = 'butt', size = 2) +
+                          arrow = arrow(length = unit(0.2,'cm'), ends = 'both', type = 'open'), 
+                          lineend = 'round', linejoin = 'round', size = 2) +
         geom_text(aes(x = middle_date(start, end), y = value + label_y_offset , label = stage) ,
                   data = summaries, fontface = 'bold')
     plt
@@ -408,7 +432,7 @@ draw_arrows <- function(plt, task, label_y_offset) {
 #' @param conf \code{list} with styling configuration
 add_themes <- function(plt, task, conf) {
     colors <- deframe(ggthemes::ggthemes_data[["fivethirtyeight"]])
-    col <- assign_colors_to_stages(task, conf$y_axis_color_by_stages) # can be bugged
+    col <- assign_colors_to_stages(task, conf$y_axis_color_by_stages)
     plt <- plt +
         ggtitle(conf$plot_title) + 
         theme(plot.title = element_text(hjust = 0.5, size = conf$plot_title_size, face = 'bold'), 
@@ -418,12 +442,13 @@ add_themes <- function(plt, task, conf) {
               panel.background = element_rect(fill = 'white'), plot.background = element_blank())
     if (conf$y_axis_label != 'None') {
         plt <- plt + scale_y_discrete(limits = rev(task$task), position = conf$y_axis_label_position, 
-                         labels = rev(task[[conf$y_axis_label]]))
+                         labels = rev(task[[conf$y_axis_label]]), expand = expand_scale(add = 1))
         } 
     plt <- plt + scale_x_date(date_breaks = conf$date_breaks, date_labels = "%b %d",
                               date_minor_breaks = conf$date_minor_breaks,
                               position = conf$x_axis_label_position,
                               limits = c(task$start[1], task$end[nrow(task)] + nchar(as.character(task$end[nrow(task)]))))
+    # limits expands plot area that geom_label will be fully present in the plot
     plt
 }
 
@@ -436,16 +461,35 @@ add_themes <- function(plt, task, conf) {
 #' @param task \code{data.frame}
 #' @param label \code{string} decides which variable from task will be drawn as a label. Possible values are: 'people',
 #' 'task' and 'None'. If 'None', then labels are not added to the plot.
-#' 
+#' @param position \code{string} can be either 'left' or 'bottom', decides where label should be placed
+#' referring to the task bar  
 #' @return \code{ggplot object}
-add_labels <- function(plt, task, label) {
+add_labels <- function(plt, task, label, position = 'left') {
     if (label == 'None') return(plt)
     task <- task[ !(task[[label]] %in% c(' ', '')), ]
+    height_offset <- 0
+    if (position == 'bottom') { # end treated as a x-axis postion value
+        task$end <- task$start + 2 #middle_date(task$start, task$end) - 2
+        height_offset <- 0.35
+    }
+    else if (position == 'left') {
+        task$end <- task$end + 2
+    }
     plt <- plt +
-        geom_label(data = task, mapping = aes(x = end + 2, y = value, label = eval(sym(eval(label)))),
+        geom_label(data = task, mapping = aes(x = end, y = value - height_offset, label = eval(sym(eval(label)))),
                    hjust = 'left')
     plt
 }
+
+add_staging_areas <- function(plt, task, cascade_staging) {
+    summaries <- create_summaries(task, cascade_staging)
+    plt <- plt + 
+        geom_rect(mapping = aes(xmin = start, xmax = end, fill = stage), 
+                  ymin = -Inf, ymax = Inf,
+                  alpha = 0.08, data = summaries, inherit.aes = FALSE) # legend brokes
+    plt
+}
+
 
 #' @name create_legend
 #' @title Create legend
@@ -460,7 +504,9 @@ create_legend <- function(task) { # order may cause errors
     labels <- levels(task$type)
     milestone_index <- which(labels == 'milestone')
     colors <- hue_pal()(length(labels))
-    colors[milestone_index] <- 'orange' # can crash if milestone do not exist
+    if (length(milestone_index) != 0) {
+        colors[milestone_index] <- 'orange'
+    }
     names(colors) <- labels
     colors
 }

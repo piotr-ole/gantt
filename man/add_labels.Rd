@@ -4,7 +4,7 @@
 \alias{add_labels}
 \title{Add task bar labels}
 \usage{
-add_labels(plt, task, label)
+add_labels(plt, task, label, position = "left")
 }
 \arguments{
 \item{plt}{\code{ggplot object}}
@@ -13,6 +13,9 @@ add_labels(plt, task, label)
 
 \item{label}{\code{string} decides which variable from task will be drawn as a label. Possible values are: 'people',
 'task' and 'None'. If 'None', then labels are not added to the plot.}
+
+\item{position}{\code{string} can be either 'left' or 'bottom', decides where label should be placed
+referring to the task bar}
 }
 \value{
 \code{ggplot object}

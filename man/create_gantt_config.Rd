@@ -4,14 +4,16 @@
 \alias{create_gantt_config}
 \title{Create configuration list}
 \usage{
-create_gantt_config(x_axis_text_size = 10, y_axis_text_size = 10,
+create_gantt_config(x_axis_text_size = 10, y_axis_text_size = 12,
   x_axis_label_position = "bottom", y_axis_label_position = "left",
   task_bar_color = "type", task_bar_width = 5,
   plot_title = "Gantt chart", plot_title_size = 15,
   stage_path = TRUE, control_path = TRUE, stage_arrows = TRUE,
-  y_axis_color_by_stages = TRUE, arrow_label_offset = 0.2,
+  y_axis_color_by_stages = TRUE, arrow_label_offset = 0.3,
   date_breaks = "1 week", date_minor_breaks = "1 day",
-  y_axis_label = "task", bar_labels = "people")
+  y_axis_label = "task", bar_labels = "people",
+  add_staging_areas = FALSE, cascade_staging = FALSE,
+  arrows_position = "inplace", bar_labels_position = "left")
 }
 \arguments{
 \item{x_axis_text_size}{\code{integer}}
@@ -47,6 +49,15 @@ create_gantt_config(x_axis_text_size = 10, y_axis_text_size = 10,
 \item{y_axis_label}{\code{string} can be 'people', 'task' or 'None', decides which parameter should label y-axis}
 
 \item{bar_labels}{\code{string} can be 'people', 'task' or 'None', decides which parameter should label task bars}
+
+\item{add_staging_areas}{\code{logical} if the each stage should have colored background}
+
+\item{cascade_staging}{\code{logical} if TRUE, then arrows arrows and staging backgrounds would depicts
+stages which starts at the end of previous stage and ends at the end of last task of the stage.}
+
+\item{arrows_position}{\code{string} where staging arrows should be placed, possible 'top' or 'inplace'}
+
+\item{bar_labels_position}{\code{string} sets position of labels draw for each bar. Can be 'right' or 'bottom'}
 }
 \description{
 Create configuration list
