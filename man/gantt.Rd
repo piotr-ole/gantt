@@ -7,10 +7,12 @@
 gantt(task, conf)
 }
 \arguments{
-\item{task}{\code{data.frame} with tasks specified, created with \code{read_task} function}
+\item{task}{\code{data.frame} with tasks specified, created with \code{\link[gantt]{read_task}} function}
 
-\item{conf}{\code{list} configuration list with styling parameters, created with
-\code{create_gantt_config}}
+\item{conf}{\code{list} configuration list with styling parameters, created with \code{\link[gantt]{create_gantt_config}}}
+}
+\value{
+\code{ggplot object} with gantt chart
 }
 \description{
 Draws Gantt chart

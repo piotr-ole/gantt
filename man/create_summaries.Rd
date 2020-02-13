@@ -4,14 +4,16 @@
 \alias{create_summaries}
 \title{Create summary data frame}
 \usage{
-create_summaries(task, cascade_summaries = FALSE)
+create_summaries(task, cascade_summaries = "None")
 }
 \arguments{
 \item{task}{\code{data.frame}}
 
-\item{cascade_summaries}{\code{logical} should stage just starts after previous ends (\code{TRUE}) or starts with first task
-in the next stage (\code{FALSE}). Note, if there are stages that overlap then stage always starts with first task
-(the \code{FALSE} equivalent).}
+\item{cascade_summaries}{\code{string} decides how the staging areas should be created. If 'None', then
+start and end of each stage are set as a start and end values of respectively first and last task within stage.
+If 'on_finish' is provided, then each stage starts while last task of previous stage ends and lasts to the end
+of the last task within stage. On the other hand 'on_begin' option makes stage starting point with
+start of the first task in a stage and ending point with start of first task in the next stage.}
 }
 \value{
 \code{data.frame} with stages summary
@@ -22,7 +24,7 @@ Creates data.frame which describes stages.
 \details{
 Each row has columns: 'stage', 'start', 'end', 'value' and 'type'.
 Type is always set as 'summary', the value is calculated as maximum value of task
-in a stage plus 0.3.
+in a stage plus 0.35.
 }
 \seealso{
 \code{\link[gantt]{read_task}}

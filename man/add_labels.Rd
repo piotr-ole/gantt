@@ -4,7 +4,7 @@
 \alias{add_labels}
 \title{Add task bar labels}
 \usage{
-add_labels(plt, task, label, position = "left")
+add_labels(plt, task, label, position = "right")
 }
 \arguments{
 \item{plt}{\code{ggplot object}}

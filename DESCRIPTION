@@ -24,7 +24,9 @@ Imports:
     data.table,
     rhandsontable,
     ggthemes,
-    tibble
+    tibble,
+    tidyr,
+    rlang
 Suggests:
     covr,
     testthat,

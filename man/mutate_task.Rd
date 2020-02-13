@@ -13,12 +13,11 @@ mutate_task(task)
 Transformed \code{data.frame}
 }
 \description{
-Transforms task data frame into ggplot friendly format
+Transforms task data.frame into ggplot friendly format
 }
 \details{
 Transforms task \code{data.frame} in a way that each row from original \code{data.frame}
-is doubled. Columns 'start' and 'end' are dropped and new column 'point' is added. Value of point
-are missing value of 'start', 'end' columns.
+is expanded to two rows, with new column 'point' having values from 'start' and 'end' columns.
 }
 \seealso{
 \code{\link[gantt]{read_task}}

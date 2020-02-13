@@ -10,7 +10,7 @@ create_stage_task_list(task)
 \item{task}{\code{data.frame}}
 }
 \value{
-\code{list} of task with names of tasks, named by stages
+\code{list} of task, named by stages
 }
 \description{
 Create list of tasks in each stages

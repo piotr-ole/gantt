@@ -19,18 +19,20 @@ read_task(task_file = "task.csv", date_format = "\%d/\%m/\%y",
 unique value to each task.
 }
 \description{
-Creates task dataframe from csv file
+Creates task data.frame from csv file
 }
 \details{
-CSV file requires column described below. The order rows are given in the file,
+CSV file requires column described below. Each row represents one task, order given in the file,
 will be also present in data.frame.
 \itemize{
 \item{\code{start}}{  date when task starts}
 \item{\code{end}}{  date when task ends}
 \item{\code{task}}{ name of a task}
-\item{\code{type}}{ user specified type of task e.x. 'critical', 'regular'}
-\item{\code{stage}}{ tasks can be divided by stages for example: 'Planing', 'Development', 'Tests'}
-\item{\code{control}}{  each task can be assigned with control value, tasks with same control value
-dependent on each other.}
+\item{\code{type}}{ user specified type of task e.x. 'critical', 'regular', there is a special type 'milestone',
+which should be specified for tasks with same start and end values.}
+\item{\code{stage}}{ tasks can be divided in stages which are more general elements of the project}
+\item{\code{control}}{ each task can be assigned with control value, tasks with same control value are considered to
+be dependent. In other words, it means that one task can start after the other is finished}
+\item{\code{people}}{ come separated people names which are assigned to perform a task}
 }
 }

@@ -16,7 +16,7 @@ Recalculate control value
 }
 \details{
 If path needs to be drawn within both stage and control group then
-it is treated as drawing path within new control groups which satisfy this need. This
+it is treated as drawing path within new control group which satisfy this need. This
 function recalculates the control groups to fulfill this requirement. This can be seen if
 some of tasks are in the same control group but in different stages. Then, after recalculation,
 this tasks will have same control value within same stage but different within two different

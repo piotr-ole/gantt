@@ -10,7 +10,7 @@ create_color_dict(task)
 \item{task}{\code{data.frame}}
 }
 \value{
-\code{list} of task with names of stages
+\code{list} of color codes named by stages
 }
 \description{
 stage color palette

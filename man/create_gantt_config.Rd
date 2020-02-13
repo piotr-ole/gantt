@@ -12,8 +12,8 @@ create_gantt_config(x_axis_text_size = 10, y_axis_text_size = 12,
   y_axis_color_by_stages = TRUE, arrow_label_offset = 0.3,
   date_breaks = "1 week", date_minor_breaks = "1 day",
   y_axis_label = "task", bar_labels = "people",
-  add_staging_areas = FALSE, cascade_staging = FALSE,
-  arrows_position = "inplace", bar_labels_position = "left")
+  add_staging_areas = FALSE, cascade_staging = "None",
+  arrows_position = "inplace", bar_labels_position = "right")
 }
 \arguments{
 \item{x_axis_text_size}{\code{integer}}
@@ -52,8 +52,12 @@ create_gantt_config(x_axis_text_size = 10, y_axis_text_size = 12,
 
 \item{add_staging_areas}{\code{logical} if the each stage should have colored background}
 
-\item{cascade_staging}{\code{logical} if TRUE, then arrows arrows and staging backgrounds would depicts
-stages which starts at the end of previous stage and ends at the end of last task of the stage.}
+\item{cascade_staging}{\code{string} decides how the staging areas should be created. If 'None', then
+start and end of each stage are set as a start and end values of respectively first and last task within stage.
+If 'on_finish' is provided, then each stage starts while last task of previous stage ends and lasts to the end
+of the last task within stage.
+On the other hand 'on_begin' option makes stage starting point with start of the first task in a stage and ending
+point with start of first task in the next stage.}
 
 \item{arrows_position}{\code{string} where staging arrows should be placed, possible 'top' or 'inplace'}
 
